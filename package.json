@@ -1,0 +1,24 @@
+{
+  "name": "mel-core",
+  "version": "0.0.0",
+  "description": "Core module of Mel applications",
+  "main": "src/core.js",
+  "author": "Fritz Heiden",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-es2015": "^6.24.1",
+    "source-map-loader": "^0.2.3",
+    "standard": "^10.0.3",
+    "webpack": "^2.6.1"
+  },
+  "dependencies": {
+    "jsmediatags": "^3.8.1"
+  }
+}
