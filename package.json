@@ -19,6 +19,7 @@
     "webpack": "^2.6.1"
   },
   "dependencies": {
-    "jsmediatags": "^3.8.1"
+    "jsmediatags": "^3.8.1",
+    "mel-web": "git+https://github.com/fritzendgltig/mel-web"
   }
 }
