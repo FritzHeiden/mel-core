@@ -1,67 +1,64 @@
+
 export default class Track {
-    constructor(id, title, artists, album, number, discNumber, file) {
-        this._title = title;
-        this._artists = artists ? artists : [];
-        this._album = album;
-        this._number = number;
-        this._discNumber = discNumber;
-        this._file = file;
-        this._id = id;
-    }
+  constructor (id, title = '', artists = [], album = {}, number = 0, discNumber = 0) {
+    this._title = title
+    this._artists = artists
+    this._album = album
+    this._number = number
+    this._discNumber = discNumber
+    this._id = id
+  }
 
-    get title() {
-        return this._title;
-    }
+  toString () {
+    return `Track {title: ${this.title}, artists: ${this.artists.map(artist => artist.name)}, ` +
+      `album: ${this.album.name}, number: ${this.number}, discNumber: ${this.discNumber}, id: ${this.id}}`
+  }
 
-    set title(value) {
-        this._title = value;
-    }
+  get title () {
+    return this._title
+  }
 
-    get artists() {
-        return this._artists;
-    }
+  set title (value) {
+    this._title = value
+  }
 
-    set artist(value) {
-        this._artists = value;
-    }
+  get artists () {
+    return this._artists
+  }
 
-    get album() {
-        return this._album;
-    }
+  set artist (value) {
+    this._artists = value
+  }
 
-    set album(value) {
-        this._album = value;
-    }
+  get album () {
+    return this._album
+  }
 
-    get number() {
-        return this._number;
-    }
+  set album (value) {
+    this._album = value
+  }
 
-    set number(value) {
-        this._number = value;
-    }
+  get number () {
+    return this._number
+  }
 
-    get discNumber() {
-        return this._discNumber;
-    }
+  set number (value) {
+    this._number = value
+  }
 
-    set discNumber(value) {
-        this._discNumber = value;
-    }
+  get discNumber () {
+    return this._discNumber
+  }
 
-    get file() {
-        return this._file;
-    }
+  set discNumber (value) {
+    this._discNumber = value
+  }
 
-    set file(value) {
-        this._file = value;
-    }
+  get id () {
+    return this._id
+  }
 
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
-    }
+  set id (value) {
+    this._id = value
+  }
 }

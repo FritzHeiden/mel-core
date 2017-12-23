@@ -1,70 +1,75 @@
 export default class Album {
-    constructor(id, artist, title, year, tracks, featureArtists) {
-        this._id = id;
-        this._title = title;
-        this._year = year;
-        this._tracks = tracks ? tracks : [];
-        this._artist = artist;
-        this._featureArtists = featureArtists ? featureArtists : [];
-    }
+  constructor (id, artist, title, year, tracks = [], featureArtists = []) {
+    this._id = id
+    this._title = title
+    this._year = year
+    this._tracks = tracks
+    this._artist = artist
+    this._featureArtists = featureArtists
+  }
 
-    addTrack(track) {
-        track.album = this;
-        this._tracks.push(track);
-    }
+  addTrack (track) {
+    track.album = this
+    this._tracks.push(track)
+  }
 
-    addFeatureArtist(artist) {
-        if (this._featureArtists.indexOf(artist) < 0) {
-            this._featureArtists.push(artist);
-            artist.addFeatureAlbum(this);
-        }
+  addFeatureArtist (artist) {
+    if (this._featureArtists.indexOf(artist) < 0) {
+      this._featureArtists.push(artist)
+      artist.addFeatureAlbum(this)
     }
+  }
 
-    set artist(artist) {
-        this._artist = artist;
-    }
+  toString () {
+    return `Album {title: ${this.title}, year: ${this.year}, trackCount: ${this.tracks.length}, ` +
+      `artist: ${this.artist.name}, featureArtists: ${this.featureArtists.map(artist => artist.name)}, id: ${this.id}}`
+  }
 
-    get artist() {
-        return this._artist;
-    }
+  set artist (artist) {
+    this._artist = artist
+  }
 
-    get title() {
-        return this._title;
-    }
+  get artist () {
+    return this._artist
+  }
 
-    set title(value) {
-        this._title = value;
-    }
+  get title () {
+    return this._title
+  }
 
-    get year() {
-        return this._year;
-    }
+  set title (value) {
+    this._title = value
+  }
 
-    set year(value) {
-        this._year = value;
-    }
+  get year () {
+    return this._year
+  }
 
-    get tracks() {
-        return this._tracks;
-    }
+  set year (value) {
+    this._year = value
+  }
 
-    set tracks(value) {
-        this._tracks = value;
-    }
+  get tracks () {
+    return this._tracks
+  }
 
-    get id() {
-        return this._id;
-    }
+  set tracks (value) {
+    this._tracks = value
+  }
 
-    set id(value) {
-        this._id = value;
-    }
+  get id () {
+    return this._id
+  }
 
-    get featureArtists() {
-        return this._featureArtists;
-    }
+  set id (value) {
+    this._id = value
+  }
 
-    set featureArtists(value) {
-        this._featureArtists = value;
-    }
+  get featureArtists () {
+    return this._featureArtists
+  }
+
+  set featureArtists (value) {
+    this._featureArtists = value
+  }
 }

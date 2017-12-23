@@ -1,51 +1,57 @@
 export default class Artist {
-    constructor(id, name, albums, featureAlbums) {
-        this._id = id;
-        this._name = name;
-        this._albums = albums ? albums : [];
-        this._featureAlbums = featureAlbums ? featureAlbums : [];
-    }
+  constructor (id, name, albums = [], featureAlbums = []) {
+    this._id = id
+    this._name = name
+    this._albums = albums
+    this._featureAlbums = featureAlbums
+  }
 
-    addAlbum(album) {
-        album.artist = this;
-        this._albums.push(album);
-    }
+  addAlbum (album) {
+    album.artist = this
+    this._albums.push(album)
+  }
 
-    addFeatureAlbum(album) {
-        if (this._featureAlbums.indexOf(album) < 0) {
-            this._featureAlbums.push(album);
-            album.addFeatureArtist(this);
-        }
+  addFeatureAlbum (album) {
+    if (this._featureAlbums.indexOf(album) < 0) {
+      this._featureAlbums.push(album)
+      album.addFeatureArtist(this)
     }
+  }
 
-    get name() {
-        return this._name;
-    }
+  toString () {
+    return `Artist {name: ${this.name}, albums: ${this.albums.map(album => album.title)}, ` +
+      `featureAlbums: ${this.featureAlbums.map(album => album.title)}, id: ${this.id}}`
+  }
 
-    set name(value) {
-        this._name = value;
-    }
+  get name () {
+    return this._name
+  }
 
-    get albums() {
-        return this._albums;
-    }
-    set albums(value) {
-        this._albums = value;
-    }
+  set name (value) {
+    this._name = value
+  }
 
-    get id() {
-        return this._id;
-    }
+  get albums () {
+    return this._albums
+  }
 
-    set id(value) {
-        this._id = value;
-    }
+  set albums (value) {
+    this._albums = value
+  }
 
-    get featureAlbums() {
-        return this._featureAlbums;
-    }
+  get id () {
+    return this._id
+  }
 
-    set featureAlbums(value) {
-        this._featureAlbums = value;
-    }
+  set id (value) {
+    this._id = value
+  }
+
+  get featureAlbums () {
+    return this._featureAlbums
+  }
+
+  set featureAlbums (value) {
+    this._featureAlbums = value
+  }
 }

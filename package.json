@@ -2,11 +2,12 @@
   "name": "mel-core",
   "version": "0.0.0",
   "description": "Core module of Mel applications",
-  "main": "src/core.js",
+  "main": "dist/mel-core.js",
   "author": "Fritz Heiden",
   "license": "MIT",
   "private": false,
   "scripts": {
+    "build-all": "webpack --config node_modules/mel-web/webpack.config.js",
     "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
@@ -19,7 +20,8 @@
     "webpack": "^2.6.1"
   },
   "dependencies": {
-    "jsmediatags": "^3.8.1",
-    "mel-web": "git+https://github.com/fritzendgltig/mel-web"
+    "crypto": "^1.0.1",
+    "mel-web": "git+https://github.com/fritzendgltig/mel-web",
+    "semaphorejs": "^1.0.0"
   }
 }
