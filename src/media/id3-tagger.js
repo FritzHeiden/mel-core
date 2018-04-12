@@ -1,15 +1,30 @@
 import File from '../data/files/file'
+import UTF8Transcoder from 'src/tools/utf8-transcoder'
 
 export default class Id3Tagger {
-  readTags (file) {
-    return new Promise((resolve, reject) => {
-      if (!(file instanceof File)) {
-        reject(new Error('First parameter must be of type File!'))
-      }
-      let dataView = new DataView(file.buffer)
+  async readTags (file) {
+    if (!(file instanceof File)) {
+      throw new Error('First parameter must be of type File!')
+    }
 
-      resolve(this._readID3v2(dataView))
-    })
+    let dataView = new DataView(file.buffer)
+    return this._readID3v2(dataView)
+  }
+
+  _synchsafeIntToInt (synchsafeInt) {
+    let string = synchsafeInt.toString(2)
+    let missing = 32 - string.length
+    for (let i = 0; i < missing; i++) {
+      string = '0' + string
+    }
+
+    let intString = ''
+
+    for (let i = 1; i < 32; i += 8) {
+      intString += string.substr(i, 7)
+    }
+
+    return parseInt(intString, 2)
   }
 
   _readID3v2Frames (dataView, header) {
@@ -18,12 +33,12 @@ export default class Id3Tagger {
     let frames = []
     while (i < header.size) {
       let frameId = ''
-      for (let j = i; j < i + 4; j++) {
-        frameId += String.fromCharCode(dataView.getUint8(j))
+      for (let j = 0; j < 4; j++) {
+        frameId += String.fromCharCode(dataView.getUint8(i))
+        i++
       }
-      i += 4
 
-      let size = this._readSynchsafeInteger(dataView, i)
+      let size = dataView.getUint32(i)
       i += 4
 
       let statusFlag = dataView.getUint8(i).toString(2)
@@ -53,7 +68,6 @@ export default class Id3Tagger {
       }
 
       let value = ''
-
       if (frameId.startsWith('T') && frameId !== 'TXXX') {
         let encoding = dataView.getUint8(i).toString(16)
         switch (encoding) {
@@ -77,30 +91,46 @@ export default class Id3Tagger {
         if (encoding === 'UTF-16' || encoding === 'UTF-16BE') {
           let hex1 = dataView.getUint8(i).toString(16)
           let hex2 = dataView.getUint8(i + 1).toString(16)
-          if ((hex1 === 'ff' && hex2 === 'fe') || (hex1 === 'fe' && hex2 === 'ff')) {
+          if ((hex1 === 'ff' && hex2 === 'fe') ||
+            (hex1 === 'fe' && hex2 === 'ff')) {
             i += 2
             size -= 2
           }
         }
 
+        let codes = []
         for (let j = i; j < i + size; j++) {
           switch (encoding) {
             case 'UTF-8':
             case 'ISO-8859-1':
-              value += String.fromCharCode(dataView.getUint8(j))
+              codes.push(dataView.getUint8(j))
               break
             case 'UTF-16': {
-              value += String.fromCodePoint(dataView.getUint16(j, true))
+              codes.push(dataView.getUint16(j, true))
               j++
               break
             }
             case 'UTF-16BE': {
-              value += String.fromCodePoint(dataView.getUint16(j))
+              codes.push(dataView.getUint16(j))
               j++
               break
             }
           }
         }
+        codes = new Uint8Array(codes)
+
+        switch (encoding) {
+          case 'UTF-8':
+          case 'ISO-8859-1':
+            value = UTF8Transcoder.decodeUtf8(codes, true)
+            break
+          case 'UTF-16':
+          case 'UTF-16BE':
+            value = String.fromCodePoint(...codes)
+            break
+        }
+      } else if (frameId === 'APIC') {
+        
       }
 
       i += size
@@ -110,17 +140,15 @@ export default class Id3Tagger {
   }
 
   _readID3v2Header (dataView) {
-    let indicator = ''
+    let identifier = ''
     for (let i = 0; i < 3; i++) {
       let byte = dataView.getUint8(i)
-      indicator += String.fromCharCode(byte)
+      identifier += String.fromCharCode(byte)
     }
 
-    if (indicator !== 'ID3') {
-      throw new Error('No ID3 tag.')
-    }
-
-    let version = `${dataView.getUint8(3).toString(16).toUpperCase()}.${dataView.getUint8(4).toString(16).toUpperCase()}}`
+    let version = `${dataView.getUint8(3)
+      .toString(16)
+      .toUpperCase()}.${dataView.getUint8(4).toString(16).toUpperCase()}`
 
     let flags = dataView.getUint8(5).toString(2)
     let gap = 8 - flags.length
@@ -135,7 +163,15 @@ export default class Id3Tagger {
 
     let size = this._readSynchsafeInteger(dataView, 6)
 
-    return {version, unsynchronized, extended, experimental, footer, size}
+    return {
+      identifier,
+      version,
+      unsynchronized,
+      extended,
+      experimental,
+      footer,
+      size
+    }
   }
 
   _readSynchsafeInteger (dataView, offset) {
@@ -171,7 +207,7 @@ export default class Id3Tagger {
     let frames = this._readID3v2Frames(dataView, header)
 
     // console.log(header);
-    // console.log(frames);
+    console.log(frames)
     let tags = {}
     for (let i = 0; i < frames.length; i++) {
       let frame = frames[i]
@@ -212,7 +248,16 @@ export default class Id3Tagger {
   }
 
   _readID3v1 (dataView) {
-    let tags = {title: '', artist: '', album: '', year: '', comment: '', zeroByte: '', track: '', genre: ''}
+    let tags = {
+      title: '',
+      artist: '',
+      album: '',
+      year: '',
+      comment: '',
+      zeroByte: '',
+      track: '',
+      genre: ''
+    }
 
     let offset = dataView.byteLength - 128
     let header = this._readString(dataView, offset, 0, 3)

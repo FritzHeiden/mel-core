@@ -6,22 +6,27 @@ export default class DirectoryScanner {
     this._fileSystem = fileSystem
     this._config = configuration
     this._readDir = limit(1, (dirPath) => this._fileSystem.readDir(dirPath))
-    this._stats = limit(1, (path) => this._fileSystem.stats(path))
+    this._stats = limit(1, (filePath) => this._fileSystem.stats(filePath))
   }
 
   async scanDirs (callback) {
-    this._config.directories.forEach(
-      directory => this.scanDir(directory, callback))
+    return Promise.all(this._config.directories.map(
+      directory => this.scanDir(directory, callback)))
   }
 
   async scanDir (directory, callback) {
-    let files = await this._readDir(directory)
+    let files = []
+    try {
+      files = await this._readDir(directory)
+    } catch (err) {
+      throw Error(`Could not read directory: ${err}`)
+    }
 
     return Promise.all(files.map(async file => {
       let path = `${directory}/${file}`
       let stats = await this._stats(path)
       if (stats.isDirectory) {
-        this.scanDir(path, callback)
+        return this.scanDir(path, callback)
       } else {
         let fileType = this._determineFileType(path)
         callback(new File(path, fileType, null, stats.lastModified))

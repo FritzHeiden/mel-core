@@ -1,9 +1,4 @@
 export default class WebServer {
-  constructor (webServer, webApp) {
-    this._webServer = webServer
-    this.webApp = webApp
-  }
-
   addRoutes (routes) {
     routes.forEach(route => this.addRoute(route))
   }
@@ -14,29 +9,45 @@ export default class WebServer {
     let callback = route.callback
     switch (method.toUpperCase()) {
       case 'GET':
-        this._webServer.get(uri, callback)
+        this._get(uri, callback)
         break
       case 'POST':
-        this._webServer.post(uri, callback)
+        this._post(uri, callback)
         break
       case 'PUT':
-        this._webServer.put(uri, callback)
+        this._put(uri, callback)
         break
       case 'DELETE':
-        this._webServer.delete(uri, callback)
+        this._delete(uri, callback)
         break
     }
   }
 
+  _get (uri, callback) {
+    throw new Error('WebServer._get(uri, callback) not implemented.')
+  }
+
+  _post (uri, callback) {
+    throw new Error('WebServer._post(uri, callback) not implemented.')
+  }
+
+  _put (uri, callback) {
+    throw new Error('WebServer._put(uri, callback) not implemented.')
+  }
+
+  _delete (uri, callback) {
+    throw new Error('WebServer._delete(uri, callback) not implemented.')
+  }
+
   start () {
-    return this._webServer.start()
+    throw new Error('WebServer.start() not implemented.')
   }
 
   get port () {
-    return this._webServer.port
+    throw new Error('WebServer.port() not implemented.')
   }
 
   get server () {
-    return this._webServer
+    throw new Error('WebServer.server() not implemented.')
   }
 }

@@ -10,6 +10,10 @@ export default class File {
     this._track = track
   }
 
+  deleteBuffer () {
+    delete this._buffer
+  }
+
   get path () {
     return this._path
   }

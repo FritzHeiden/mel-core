@@ -8,16 +8,26 @@ export default class Album {
     this._featureArtists = featureArtists
   }
 
-  addTrack (track) {
-    track.album = this
-    this._tracks.push(track)
+  addTrack (newTrack) {
+    newTrack.album = this
+    if (this._tracks.findIndex(track => track.id === newTrack.id) === -1) {
+      this._tracks.push(newTrack)
+    }
   }
 
-  addFeatureArtist (artist) {
-    if (this._featureArtists.indexOf(artist) < 0) {
-      this._featureArtists.push(artist)
-      artist.addFeatureAlbum(this)
+  addTracks (tracks) {
+    tracks.forEach(track => this.addTrack(track))
+  }
+
+  addFeatureArtist (newArtist) {
+    if (this._featureArtists.findIndex(artist => artist.id === newArtist.id) === -1) {
+      this._featureArtists.push(newArtist)
+      newArtist.addFeatureAlbum(this)
     }
+  }
+
+  addFeatureArtists (artists) {
+    artists.forEach(artist => this.addFeatureArtist(artist))
   }
 
   toString () {

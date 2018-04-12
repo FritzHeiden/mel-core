@@ -3,42 +3,80 @@ import Track from 'src/data/track'
 import Album from 'src/data/album'
 import Artist from 'src/data/artist'
 
-export default class Deserializer {
-  deserializeTrack (data) {
-    let id = data.id
-    let title = data.title
-    let artists = data.artists.map(artistId => new Artist(artistId))
-    let album = new Album(data.album)
-    let number = data.number
-    let discNumber = data.discNumber
-    let filePath = data.filePath
-    return new Track(id, title, artists, album, number, discNumber, filePath)
-  }
+let deserializer = {}
 
-  deserializeAlbum (data) {
-    let id = data.id
-    let artist = new Artist(data.artist)
-    let title = data.title
-    let year = data.year
-    let tracks = []
-    let featureArtists = data.featureArtists.map(artistId => new Artist(artistId))
-    return new Album(id, artist, title, year, tracks, featureArtists)
+deserializer.deserializeTrack = trackJson => {
+  if (!trackJson) {
+    return null
   }
-
-  deserializeArtist (data) {
-    let id = data.id
-    let name = data.name
-    let albums = []
-    let featureAlbums = []
-    return new Artist(id, name, albums, featureAlbums)
-  }
-
-  deserializeFile (data) {
-    if (!data) return null
-    let path = data.path
-    let type = data.type
-    let lastModified = data.lastModified
-    let track = new Track(data.trackId)
-    return new File(path, type, null, lastModified, track)
-  }
+  let id = trackJson.id
+  let title = trackJson.title
+  let artists = trackJson.artists.map(artistId => new Artist(artistId))
+  let album = new Album(trackJson.album)
+  let number = trackJson.number
+  let discNumber = trackJson.discNumber
+  let filePath = trackJson.filePath
+  return new Track(id, title, artists, album, number, discNumber, filePath)
 }
+
+deserializer.deserializeAlbum = albumJson => {
+  if (!albumJson) {
+    return null
+  }
+  if (typeof albumJson === 'string') {
+    return new Album(albumJson)
+  }
+
+
+  let id = albumJson.id
+  let artist = deserializer.deserializeArtist(albumJson.artist)
+  let title = albumJson.title
+  let year = albumJson.year
+  let tracks = albumJson.tracks ? albumJson.tracks.map(trackId => new Track(trackId)) : []
+  let featureArtists = albumJson.featureArtists ? albumJson.featureArtists.map(artistId => new Artist(artistId)) : []
+  let album = new Album(id, artist, title, year, tracks, featureArtists)
+  return album
+}
+
+deserializer.deserializeAlbums = albumsJson => {
+  if (!albumsJson) {
+    return null
+  }
+  return albumsJson.map(artistJson => deserializer.deserializeAlbum(artistJson))
+}
+
+deserializer.deserializeArtist = artistJson => {
+  if (!artistJson) {
+    return null
+  }
+  if (typeof artistJson === 'string') {
+    return new Artist(artistJson)
+  }
+
+  let id = artistJson.id
+  let name = artistJson.name ? artistJson.name : 'Unknown Artist'
+  let albums = deserializer.deserializeAlbums(artistJson.albums)
+  let featureAlbums = deserializer.deserializeAlbums(artistJson.featureAlbums)
+  return new Artist(id, name, albums, featureAlbums)
+}
+
+deserializer.deserializeArtists = artistsJson => {
+  if (!artistsJson) {
+    return null
+  }
+  return artistsJson.map(artistJson => deserializer.deserializeArtist(artistJson))
+}
+
+deserializer.deserializeFile = fileJson => {
+  if (!fileJson) {
+    return null
+  }
+  if (!fileJson) return null
+  let path = fileJson.path
+  let type = fileJson.type
+  let lastModified = fileJson.lastModified
+  let track = new Track(fileJson.trackId)
+  return new File(path, type, null, lastModified, track)
+}
+
+export default deserializer

@@ -9,6 +9,12 @@ export default class Track {
     this._id = id
   }
 
+  addArtist (newArtist) {
+    if (this._artists.findIndex(artist => artist.id === newArtist.id) === -1) {
+      this._artists.push(newArtist)
+    }
+  }
+
   toString () {
     return `Track {title: ${this.title}, artists: ${this.artists.map(artist => artist.name)}, ` +
       `album: ${this.album.name}, number: ${this.number}, discNumber: ${this.discNumber}, id: ${this.id}}`

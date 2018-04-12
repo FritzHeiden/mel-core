@@ -1,43 +1,19 @@
-import Id3Tagger from 'src/media/id3-tagger'
-import { IdGenerator } from 'src/database/id-generator'
-import Artist from 'src/data/artist'
-import Album from 'src/data/album'
-import Track from 'src/data/track'
+import Id3Tagger from '../media/id3-tagger'
+import { IdGenerator } from '../database/id-generator'
+import Artist from '../data/artist'
+import Album from '../data/album'
+import Track from '../data/track'
 
 export default class TagReader {
   constructor (configuration) {
     this._id3Tagger = new Id3Tagger()
-    this._isReading = false
-    this._jobs = []
     this._config = configuration
   }
 
-  _readNextFile () {
-    setTimeout(() => {
-      if (this._isReading || this._jobs.length === 0) {
-        return
-      }
-
-      this._isReading = true
-      let job = this._jobs.pop()
-      this._id3Tagger.readTags(job.file).then(tags => {
-        let track = this._generateMetaData(job.file, tags)
-        this._isReading = false
-        this._readNextFile()
-        job.resolve(track)
-      }).catch(err => {
-        this._isReading = false
-        this._readNextFile()
-        job.reject(err)
-      })
-    }, 1)
-  }
-
-  readTags (file) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({file, resolve, reject})
-      this._readNextFile()
-    })
+  async readTags (file) {
+    let tags = await this._id3Tagger.readTags(file)
+    let track = this._generateMetaData(file, tags)
+    return track
   }
 
   _generateMetaData (file, tags) {
@@ -46,6 +22,7 @@ export default class TagReader {
     let trackArtists = tags.trackArtistNames.map(trackArtistName => {
       return new Artist(undefined, trackArtistName, [], [])
     })
+
     trackArtists.forEach(trackArtist => {
       trackArtist.id = IdGenerator.getArtistId(trackArtist)
     })
@@ -81,12 +58,13 @@ export default class TagReader {
 
     albumArtist.addAlbum(album)
 
+
     return track
   }
 
   _evaluateTags (tags) {
     let year = tags.year ? parseInt(tags.year.split('-')[0]) : undefined
-    let number = tags.number ? parseInt(tags.number.split('/')[0]) : 0
+    let trackNumber = tags.trackNumber ? parseInt(tags.trackNumber.split('/')[0]) : 0
     let discNumber = tags.discNumber ? parseInt(tags.discNumber) : 1
 
     let trackArtistNames = []
@@ -105,7 +83,7 @@ export default class TagReader {
       trackArtistNames.push(trackArtistName)
     }
 
-    let albumArtistName = tags.artistName
+    let albumArtistName = tags.albumArtistName
     if (albumArtistName) {
       let result = this._analyseFeatureArtists(albumArtistName)
       albumArtistName = result.string.replace(/ +/g, ' ').trim()
@@ -115,7 +93,7 @@ export default class TagReader {
     if (!albumArtistName || albumArtistName === '') albumArtistName = trackArtistName
     let albumTitle = tags.albumTitle
 
-    return {trackTitle, year, number, discNumber, trackArtistNames, albumArtistName, albumTitle}
+    return {trackTitle, year, trackNumber, discNumber, trackArtistNames, albumArtistName, albumTitle}
   }
 
   _analyseFeatureArtists (string) {

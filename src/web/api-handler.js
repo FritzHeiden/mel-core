@@ -3,7 +3,6 @@ import Serializer from 'src/database/serializer'
 export default class ApiHandler {
   constructor (database) {
     this._db = database
-    this._serializer = new Serializer()
   }
 
   getRoutes () {
@@ -14,9 +13,7 @@ export default class ApiHandler {
 
   _getArtists (request, response) {
     this._db.readArtists().then(artists => {
-      artists = artists.map(artist => this._serializer.serializeArtist(artist))
-
-      console.log(artists)
+      artists = artists.map(artist => Serializer.serializeArtist(artist))
 
       response.status = 200
       response.setHeader('Content-Type', 'application/json')

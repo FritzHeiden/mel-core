@@ -1,211 +1,253 @@
 import Serializer from 'src/database/serializer'
 import Deserializer from 'src/database/deserializer'
-import { limit } from 'semaphorejs'
+import crypto from 'crypto'
+import JobQueue from 'src/job-qeue'
 
-const PERSIST_FILE = 0
-const READ_FILE = 1
-const PERSIST_TRACK = 2
-const READ_TRACK = 3
-const PERSIST_ALBUM = 4
-const READ_ALBUM = 5
-const PERSIST_ARTIST = 6
-const READ_ARTIST = 7
-const READ_ARTISTS = 8
+const IDENTITY = 'id'
+const MAX_READING_JOBS = 5
+const MAX_WRITING_JOBS = 1
 
 export default class Database {
-  constructor (database) {
-    (async () => {
-      this._serializer = new Serializer()
-      this._deserializer = new Deserializer()
-      this._jobs = []
-      this._isRunning = false
-
-      this._db = database
-      await this._db.initialize()
-      console.log('Database loaded.')
-
-      this._createFile = limit(1, (fileJson) => this._db.insertFile(fileJson))
-      this._readFile = limit(10, (filePath) => this._db.readFile(filePath))
-      this._updateFile = limit(1, (fileJson) => this._db.updateFile(fileJson))
-    })()
+  constructor () {
+    this._readingQueue = new JobQueue(MAX_READING_JOBS)
+    this._queueReading = this._readingQueue.queueJob.bind(this._readingQueue)
+    this._writingQueue = new JobQueue(MAX_WRITING_JOBS)
+    this._queueWriting = this._writingQueue.queueJob.bind(this._writingQueue)
+    this._persistingFileQueue = new JobQueue(1)
+    this._queuePersistingFile = this._persistingFileQueue.queueJob.bind(this._persistingFileQueue)
+    this._persistingTrackQueue = new JobQueue(1)
+    this._queuePersistingTrack = this._persistingTrackQueue.queueJob.bind(this._persistingTrackQueue)
+    this._persistingAlbumQueue = new JobQueue(1)
+    this._queuePersistingAlbum = this._persistingAlbumQueue.queueJob.bind(this._persistingAlbumQueue)
+    this._persistingArtistQueue = new JobQueue(1)
+    this._queuePersistingArtist = this._persistingArtistQueue.queueJob.bind(this._persistingArtistQueue)
   }
 
-  async persistFile (file) {
-    let readFile = await this._readFile(file.path)
-    if (readFile) {
-      readFile = this._deserializer.deserializeFile(readFile)
-      if (JSON.stringify(readFile.lastModified) !==
-        JSON.stringify(file.lastModified)) {
-        let fileJson = this._serializer.serializeFile(file)
-        return this._updateFile(fileJson)
-      } else {
-        return Promise.resolve(null)
-      }
-    } else {
-      let fileJson = this._serializer.serializeFile(file)
-      return this._createFile(fileJson)
+  async initialize () {
+    await this._loadDatabase()
+
+    this._identity = await this._readDatabaseMetaData(IDENTITY)
+    if (!this._identity) {
+      this._identity = this._generateIdentity()
+      await this._updateDatabaseMetaData(IDENTITY, this._identity)
     }
   }
 
+  _generateIdentity () {
+    let currentDate = (new Date()).valueOf().toString()
+    let random = Math.random().toString()
+    return crypto.createHash('sha1').update(currentDate + random).digest('hex')
+  }
+
+  get identity () {
+    return this._identity
+  }
+
+  // Track //
+
+  async createTrack (track) {
+    let trackJson = Serializer.serializeTrack(track)
+    return this._queueWriting(() => this._createTrack(trackJson))
+  }
+
+  async _createTrack (trackJson) {
+    throw new Error('Database._createTrack(trackJson) not implemented!')
+  }
+
+  async readTrack (trackId) {
+    let trackJson = await this._queueReading(() => this._readTrack((trackId)))
+    return Deserializer.deserializeTrack(trackJson)
+  }
+
+  async _readTrack (trackId) {
+    throw new Error('Database._readTrack(trackId) not implemented!')
+  }
+
+  async updateTrack (track) {
+    let trackJson = Serializer.serializeTrack(track)
+    return this._queueWriting(() => this._updateTrack(trackJson))
+  }
+
+  async _updateTrack (trackJson) {
+    throw new Error('Database._updateTrack(trackJson) not implemented!')
+  }
+
+  async persistTrack (track) {
+    return this._queuePersistingTrack(() => this._persistTrack(track))
+  }
+
+  async _persistTrack (track) {
+    try {
+      if (await this.readTrack(track.id)) {
+        return this.updateTrack(track)
+      } else {
+        return this.createTrack(track)
+      }
+    } catch (error) {
+      throw new Error(`Could not persist track: ${error}`)
+    }
+  }
+
+  // Album
+
+  async createAlbum (album) {
+    let albumJson = Serializer.serializeAlbum(album)
+    return this._queueWriting(() => this._createAlbum(albumJson))
+  }
+
+  async _createAlbum (albumJson) {
+    throw new Error('Database._createAlbum(albumJson) not implemented!')
+  }
+
+  async readAlbum (albumId) {
+    let albumJson = await this._queueReading(() => this._readAlbum(albumId))
+    return Deserializer.deserializeAlbum(albumJson)
+  }
+
+  async _readAlbum (albumId) {
+    throw new Error('Database._readAlbum(albumId) not implemented!')
+  }
+
+  async updateAlbum (album) {
+    let albumJson = Serializer.serializeAlbum(album)
+    return this._queueWriting(() => this._updateAlbum(albumJson))
+  }
+
+  async _updateAlbum (albumJson) {
+    throw new Error('Database._updateAlbum(albumJson) not implemented!')
+  }
+
+  async persistAlbum (album) {
+    return this._queuePersistingAlbum(() => this._persistAlbum(album))
+  }
+
+  async _persistAlbum (album) {
+    try {
+      let readAlbum = await this.readAlbum(album.id)
+      if (readAlbum) {
+        readAlbum.addTracks(album.tracks)
+        readAlbum.addFeatureArtists(album.featureArtists)
+        return this.updateAlbum(readAlbum)
+      } else {
+        return this.createAlbum(album)
+      }
+    } catch (error) {
+      throw new Error(`Could not persist album: ${error}`)
+    }
+  }
+
+  // Artist
+
+  async createArtist (artist) {
+    let artistJson = Serializer.serializeArtist(artist)
+    return this._queueWriting(() => this._createArtist(artistJson))
+  }
+
+  async _createArtist (artistJson) {
+    throw new Error('Database._createArtist(artistJson) not implemented!')
+  }
+
+  async readArtist (artistId) {
+    let artistJson = await this._queueReading(() => this._readArtist(artistId))
+    return Deserializer.deserializeArtist(artistJson)
+  }
+
+  async _readArtist (artistId) {
+    throw new Error('Database._readArtist(artistId) not implemented!')
+  }
+
+  async updateArtist (artist) {
+    let artistJson = Serializer.serializeArtist(artist)
+    return this._queueWriting(() => this._updateArtist(artistJson))
+  }
+
+  async _updateArtist (artistJson) {
+    throw new Error('Database._updateArtist(artistJson) not implemented!')
+  }
+
+  async readArtists () {
+    let artistsJson = await this._queueReading(() => this._readArtists())
+    return Deserializer.deserializeArtists(artistsJson)
+  }
+
+  async _readArtists () {
+    throw new Error('Database._readArtists() not implemented!')
+  }
+
+  async persistArtist (artist) {
+    return this._queuePersistingArtist(() => this._persistArtist(artist))
+  }
+
+  async _persistArtist (artist) {
+    try {
+      let readArtist = await this.readArtist(artist.id)
+      if (readArtist) {
+        readArtist.addAlbums(artist.albums)
+        readArtist.addFeatureAlbums(artist.featureAlbums)
+        await this.updateArtist(readArtist)
+      } else {
+        await this.createArtist(artist)
+      }
+    } catch (error) {
+      throw new Error(`Could not persist artist:\n${error}`)
+    }
+  }
+
+  // General
+
+  async _loadDatabase () {
+    throw new Error('Database._loadDatabase() is not implemented!')
+  }
+
+  // File
+
+  async createFile (file) {
+    let fileJson = Serializer.serializeFile(file)
+    return this._queueWriting(() => this._createFile(fileJson))
+  }
+
+  async _createFile (fileJson) {
+    throw new Error('Database._createFile(fileJson) not implemented!')
+  }
+
   async readFile (filePath) {
-    return this._readFile(filePath)
+    let fileJson = await this._queueReading(() => this._readFile(filePath))
+    return Deserializer.deserializeFile(fileJson)
   }
 
-  async isFileUpToDate (file) {
-    let readFile = await this._readFile(file.path)
-    return JSON.stringify(readFile.lastModified) ===
-      JSON.stringify(file.lastModified)
+  async _readFile (filePath) {
+    throw new Error('Database._readFile(filePath) not implemented!')
   }
 
-  persistTrack (track) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({type: PERSIST_TRACK, object: track, resolve, reject})
-      this._doNextJob()
-    })
+  async updateFile (file) {
+    let fileJson = Serializer.serializeFile(file)
+    return this._queueWriting(() => this._updateFile(fileJson))
   }
 
-  readTrack (trackId) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({type: READ_TRACK, object: trackId, resolve, reject})
-      this._doNextJob()
-    })
+  async _updateFile (fileJson) {
+    throw new Error('Database._updateFile(fileJson) not implemented!')
   }
 
-  persistAlbum (album) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({type: PERSIST_ALBUM, object: album, resolve, reject})
-      this._doNextJob()
-    })
+  async persistFile (file) {
+    return this._queuePersistingFile(() => this._persistFile(file))
   }
 
-  readAlbum (albumId) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({type: READ_ALBUM, object: albumId, resolve, reject})
-      this._doNextJob()
-    })
+  async _persistFile (file) {
+    if (!await this.readFile(file.id)) {
+      return this.createFile(file)
+    } else {
+      return this.updateFile(file)
+    }
   }
 
-  persistArtist (artist) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift(
-        {type: PERSIST_ARTIST, object: artist, resolve, reject})
-      this._doNextJob()
-    })
+  // Meta Data
+
+  async _readDatabaseMetaData (key) {
+    throw new Error('Database._readDatabaseMetadata(key) not implemented!')
   }
 
-  readArtist (artistId) {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({type: READ_ARTIST, object: artistId, resolve, reject})
-      this._doNextJob()
-    })
-  }
-
-  readArtists () {
-    return new Promise((resolve, reject) => {
-      this._jobs.unshift({type: READ_ARTISTS, object: null, resolve, reject})
-      this._doNextJob()
-    })
-  }
-
-  _doNextJob () {
-    setTimeout(() => {
-      if (this._isRunning || this._jobs.length === 0) {
-        return
-      }
-
-      this._isRunning = true
-      let job = this._jobs.pop()
-      let resolve = object => {
-        this._isRunning = false
-        this._doNextJob()
-        job.resolve(object)
-      }
-
-      let reject = error => {
-        this._isRunning = false
-        this._doNextJob()
-        job.reject(error)
-      }
-      switch (job.type) {
-        case PERSIST_FILE:
-          this._persistFile(job.object).then(resolve).catch(reject)
-          break
-        case READ_FILE:
-          this._readFile(job.object).then(resolve).catch(reject)
-          break
-        case PERSIST_TRACK:
-          this._persistTrack(job.object).then(resolve).catch(reject)
-          break
-        case READ_TRACK:
-          this._readTrack(job.object).then(resolve).catch(reject)
-          break
-        case PERSIST_ALBUM:
-          this._persistAlbum(job.object).then(resolve).catch(reject)
-          break
-        case READ_ALBUM:
-          this._readAlbum(job.object).then(resolve).catch(reject)
-          break
-        case PERSIST_ARTIST:
-          this._persistArtist(job.object).then(resolve).catch(reject)
-          break
-        case READ_ARTIST:
-          this._readArtist(job.object).then(resolve).catch(reject)
-          break
-        case READ_ARTISTS:
-          this._readArtists().then(resolve).catch(reject)
-          break
-      }
-    }, 1)
-  }
-
-  _persistTrack (track) {
-    return this._db.readTrack(track.id)
-      .then(exists => {
-        if (exists) return Promise.resolve(null)
-        let trackJson = this._serializer.serializeTrack(track)
-        return this._db.insertTrack(trackJson)
-      })
-  }
-
-  _readTrack (trackId) {
-    return this._db.readTrack(trackId)
-      .then(
-        track => Promise.resolve(this._deserializer.deserializeTrack(track)))
-  }
-
-  _persistAlbum (album) {
-    return this._db.readAlbum(album.id)
-      .then(exists => {
-        if (exists) return Promise.resolve(null)
-        let albumJson = this._serializer.serializeAlbum(album)
-        return this._db.insertAlbum(albumJson)
-      })
-  }
-
-  _readAlbum (albumId) {
-    return this._db.readAlbum(albumId)
-      .then(
-        album => Promise.resolve(this._deserializer.deserializeAlbum(album)))
-  }
-
-  _persistArtist (artist) {
-    return this._db.readArtist(artist.id)
-      .then(exists => {
-        if (exists) return Promise.resolve(null)
-        let artistJson = this._serializer.serializeArtist(artist)
-        return this._db.insertArtist(artistJson)
-      })
-  }
-
-  _readArtist (artistId) {
-    return this._db.readArtist(artistId)
-      .then(
-        artist => Promise.resolve(this._deserializer.deserializeArtist(artist)))
-  }
-
-  _readArtists () {
-    return this._db.readArtists()
-      .then(artists => artists.map(
-        artist => this._deserializer.deserializeArtist(artist)))
+  async _updateDatabaseMetaData (key, value) {
+    throw new Error(
+      'Database._updateDatabaseMetaData(key, value) not implemented!')
   }
 }
