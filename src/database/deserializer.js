@@ -1,7 +1,7 @@
-import File from 'src/data/files/file'
-import Track from 'src/data/track'
-import Album from 'src/data/album'
-import Artist from 'src/data/artist'
+import File from '../data/files/file'
+import Track from '../data/track'
+import Album from '../data/album'
+import Artist from '../data/artist'
 
 let deserializer = {}
 
@@ -27,13 +27,16 @@ deserializer.deserializeAlbum = albumJson => {
     return new Album(albumJson)
   }
 
-
   let id = albumJson.id
   let artist = deserializer.deserializeArtist(albumJson.artist)
   let title = albumJson.title
   let year = albumJson.year
-  let tracks = albumJson.tracks ? albumJson.tracks.map(trackId => new Track(trackId)) : []
-  let featureArtists = albumJson.featureArtists ? albumJson.featureArtists.map(artistId => new Artist(artistId)) : []
+  let tracks = albumJson.tracks
+    ? albumJson.tracks.map(trackId => new Track(trackId))
+    : []
+  let featureArtists = albumJson.featureArtists
+    ? albumJson.featureArtists.map(artistId => new Artist(artistId))
+    : []
   let album = new Album(id, artist, title, year, tracks, featureArtists)
   return album
 }
@@ -64,7 +67,9 @@ deserializer.deserializeArtists = artistsJson => {
   if (!artistsJson) {
     return null
   }
-  return artistsJson.map(artistJson => deserializer.deserializeArtist(artistJson))
+  return artistsJson.map(artistJson =>
+    deserializer.deserializeArtist(artistJson)
+  )
 }
 
 deserializer.deserializeFile = fileJson => {

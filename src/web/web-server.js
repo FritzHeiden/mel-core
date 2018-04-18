@@ -23,6 +23,10 @@ export default class WebServer {
     }
   }
 
+  addStaticDirectory (directory) {
+    this._static(directory)
+  }
+
   _get (uri, callback) {
     throw new Error('WebServer._get(uri, callback) not implemented.')
   }
@@ -37,6 +41,10 @@ export default class WebServer {
 
   _delete (uri, callback) {
     throw new Error('WebServer._delete(uri, callback) not implemented.')
+  }
+
+  _static (directory) {
+    throw new Error('WebServer._static(directory) not implemented.')
   }
 
   start () {

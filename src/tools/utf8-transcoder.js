@@ -8,8 +8,12 @@ Utf8Transcoder.decodeUtf8 = (uint8array, removeZeroTermination) => {
   let c2 = 0
 
   // If we have a BOM skip it
-  if (uint8array.length >= 3 && uint8array[0] === 0xef && uint8array[1] === 0xbb &&
-    uint8array[2] === 0xbf) {
+  if (
+    uint8array.length >= 3 &&
+    uint8array[0] === 0xef &&
+    uint8array[1] === 0xbb &&
+    uint8array[2] === 0xbf
+  ) {
     i = 3
   }
 
@@ -26,7 +30,9 @@ Utf8Transcoder.decodeUtf8 = (uint8array, removeZeroTermination) => {
     } else if (c > 191 && c < 224) {
       // if (i + 1 >= uint8array.length) {
       if (i + 1 > uint8array.length) {
-        throw new Error('UTF-8 Decode failed. Two byte character was truncated.')
+        throw new Error(
+          'UTF-8 Decode failed. Two byte character was truncated.'
+        )
       }
       c2 = uint8array[i + 1]
 
@@ -34,12 +40,15 @@ Utf8Transcoder.decodeUtf8 = (uint8array, removeZeroTermination) => {
       i += 2
     } else {
       if (i + 2 >= uint8array.length) {
-        throw new Error('UTF-8 Decode failed. Multi byte character was truncated.')
+        throw new Error(
+          'UTF-8 Decode failed. Multi byte character was truncated.'
+        )
       }
       c2 = uint8array[i + 1]
       c3 = uint8array[i + 2]
-      result += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) |
-        (c3 & 63))
+      result += String.fromCharCode(
+        ((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)
+      )
       i += 3
     }
   }

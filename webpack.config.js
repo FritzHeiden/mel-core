@@ -1,43 +1,37 @@
-var path = require('path')
+const path = require('path')
+const fs = require('fs')
 
-var DIST_DIR = path.join(__dirname, 'dist')
-var CLIENT_DIR = path.join(__dirname, 'src')
+const DIST_DIR = path.join(__dirname, 'dist')
+const SRC_DIR = path.join(__dirname, 'src')
+const MODULES_DIR = path.join(__dirname, 'node_modules')
+const MEL_WEB_DIR = fs.realpathSync(path.join(MODULES_DIR, 'mel-web/dist'))
 
 module.exports = {
-  context: CLIENT_DIR,
-  entry: {
-    path: path.join(CLIENT_DIR, './core.js')
+  mode: 'development',
+  entry: path.join(SRC_DIR, './core.js'),
+  output: {
+    filename: 'mel-core.js',
+    path: DIST_DIR,
+    library: 'mel-core',
+    libraryTarget: 'umd'
   },
-  resolve: {
-    extensions: ['.js'],
-    alias: {
-      src: path.resolve(__dirname, 'src')
-    }
-  },
-  devtool: 'source-map',
+  target: 'node',
   module: {
     rules: [
       {
-        test: /\.js$|\.jsx$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader'
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
       },
       {
-        test: /\.js$|\.jsx$/,
-        use: [{loader: 'source-map-loader'}],
-        enforce: 'pre'
+        include: MEL_WEB_DIR,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+          outputPath: 'mel-web',
+          context: MEL_WEB_DIR
+        }
       }
     ]
-  },
-  output: {
-    filename: './mel-core.js',
-    path: DIST_DIR,
-    library: 'MelCore',
-    libraryTarget: 'umd'
   }
-  // plugins: [
-  //     new webpack.DefinePlugin({
-  //         'process.env.NODE_ENV': JSON.stringify('development')
-  //     })
-  // ]
 }

@@ -1,23 +1,25 @@
-import WebApp from 'mel-web'
-import DirectoryScanner from 'src/files/directory-scanner'
-import WebServer from 'src/web/web-server'
-import ConfigurationLoader from 'src/config/configuration-loader'
-import TagReader from 'src/media/tag-reader'
-import Database from 'src/database/database'
-import ApiHandler from 'src/web/api-handler'
-import File from 'src/data/files/file'
-import Track from 'src/data/track'
-import Album from 'src/data/album'
-import Artist from 'src/data/artist'
-import MelServerSocket from 'src/network/mel-server-socket'
-import MelClientSocket from 'src/network/mel-client-socket'
-import WebSocket from 'src/network/web-socket'
-import FileSystem from 'src/files/file-system'
-import JobQueue from 'src/job-qeue'
+import DirectoryScanner from './files/directory-scanner'
+import WebServer from './web/web-server'
+import ConfigurationLoader from './config/configuration-loader'
+import TagReader from './media/tag-reader'
+import Database from './database/database'
+import ApiHandler from './web/api-handler'
+import File from './data/files/file'
+import Track from './data/track'
+import Album from './data/album'
+import Artist from './data/artist'
+import MelServerSocket from './network/mel-server-socket'
+import MelClientSocket from './network/mel-client-socket'
+import WebSocket from './network/web-socket'
+import FileSystem from './files/file-system'
+import JobQueue from './tools/job-qeue'
+
+// Dependency for web app
+require.context('mel-web/dist', true, /.+/)
 
 const RELATIVE_CONFIG_PATH = '/mel.config'
 
-export class MelCore {
+class MelCore {
   async initialize () {
     // Load Configuration
     try {
@@ -53,12 +55,7 @@ export class MelCore {
     }
 
     // Web App
-    try {
-      this._webApp = new WebApp()
-      this._webServer.addRoutes(this._webApp.getRoutes())
-    } catch (err) {
-      console.error('Could not initialize web app: ' + err)
-    }
+    this._webServer.addStaticDirectory(this._fileSystem.APPLICATION_DIRECTORY + '/mel-web/')
 
     // Network Adapter
     try {
@@ -140,4 +137,4 @@ export class MelCore {
   }
 }
 
-export { Artist, Album, Track, File, WebSocket, MelClientSocket, FileSystem, WebServer, Database }
+export { Artist, Album, Track, File, WebSocket, MelClientSocket, FileSystem, WebServer, Database, MelCore }

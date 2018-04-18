@@ -20,7 +20,10 @@ export default class Album {
   }
 
   addFeatureArtist (newArtist) {
-    if (this._featureArtists.findIndex(artist => artist.id === newArtist.id) === -1) {
+    if (
+      this._featureArtists.findIndex(artist => artist.id === newArtist.id) ===
+      -1
+    ) {
       this._featureArtists.push(newArtist)
       newArtist.addFeatureAlbum(this)
     }
@@ -31,8 +34,14 @@ export default class Album {
   }
 
   toString () {
-    return `Album {title: ${this.title}, year: ${this.year}, trackCount: ${this.tracks.length}, ` +
-      `artist: ${this.artist.name}, featureArtists: ${this.featureArtists.map(artist => artist.name)}, id: ${this.id}}`
+    return (
+      `Album {title: ${this.title}, year: ${this.year}, trackCount: ${
+        this.tracks.length
+      }, ` +
+      `artist: ${this.artist.name}, featureArtists: ${this.featureArtists.map(
+        artist => artist.name
+      )}, id: ${this.id}}`
+    )
   }
 
   set artist (artist) {

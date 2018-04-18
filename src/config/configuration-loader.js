@@ -2,9 +2,7 @@ import Configuration from './configuration'
 
 const DEFAULT_CONFIG = {
   scanner: {
-    extensions: [
-      '.mp3'
-    ],
+    extensions: ['.mp3'],
     directories: []
   },
   tag_reader: {
@@ -50,7 +48,9 @@ export default class ConfigurationLoader {
   }
 
   saveConfiguration (configuration) {
-    return this._fileSystem.writeFile(this._configPath,
-      configuration.toJsonString())
+    return this._fileSystem.writeFile(
+      this._configPath,
+      configuration.toJsonString()
+    )
   }
 }

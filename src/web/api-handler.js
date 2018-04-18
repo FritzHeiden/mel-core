@@ -1,4 +1,4 @@
-import Serializer from 'src/database/serializer'
+import Serializer from '../database/serializer'
 
 export default class ApiHandler {
   constructor (database) {
@@ -7,7 +7,11 @@ export default class ApiHandler {
 
   getRoutes () {
     return [
-      {uri: '/api/artists', method: 'GET', callback: this._getArtists.bind(this)}
+      {
+        uri: '/api/artists',
+        method: 'GET',
+        callback: this._getArtists.bind(this)
+      }
     ]
   }
 
@@ -17,7 +21,7 @@ export default class ApiHandler {
 
       response.status = 200
       response.setHeader('Content-Type', 'application/json')
-      response.body = JSON.stringify({artists})
+      response.body = JSON.stringify({ artists })
       response.send()
     })
   }

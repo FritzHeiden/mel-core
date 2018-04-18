@@ -1,5 +1,5 @@
 import File from '../data/files/file'
-import UTF8Transcoder from 'src/tools/utf8-transcoder'
+import UTF8Transcoder from '../tools/utf8-transcoder'
 
 export default class Id3Tagger {
   async readTags (file) {
@@ -48,9 +48,9 @@ export default class Id3Tagger {
         statusFlag = '0' + statusFlag
       }
       statusFlag = {
-        'tag_alter_preservation': statusFlag[1] === '1',
-        'file_alter_preservation': statusFlag[2] === '1',
-        'read_only': statusFlag[3] === '1'
+        tag_alter_preservation: statusFlag[1] === '1',
+        file_alter_preservation: statusFlag[2] === '1',
+        read_only: statusFlag[3] === '1'
       }
 
       let formatDescription = dataView.getUint8(i).toString(2)
@@ -60,11 +60,11 @@ export default class Id3Tagger {
         formatDescription = '0' + formatDescription
       }
       formatDescription = {
-        'grouping_identity': formatDescription[1] === '1',
-        'compression': formatDescription[4] === '1',
-        'encryption': formatDescription[5] === '1',
-        'unsynchronisation': formatDescription[6] === '1',
-        'data_length_indicator': formatDescription[7] === '1'
+        grouping_identity: formatDescription[1] === '1',
+        compression: formatDescription[4] === '1',
+        encryption: formatDescription[5] === '1',
+        unsynchronisation: formatDescription[6] === '1',
+        data_length_indicator: formatDescription[7] === '1'
       }
 
       let value = ''
@@ -91,8 +91,10 @@ export default class Id3Tagger {
         if (encoding === 'UTF-16' || encoding === 'UTF-16BE') {
           let hex1 = dataView.getUint8(i).toString(16)
           let hex2 = dataView.getUint8(i + 1).toString(16)
-          if ((hex1 === 'ff' && hex2 === 'fe') ||
-            (hex1 === 'fe' && hex2 === 'ff')) {
+          if (
+            (hex1 === 'ff' && hex2 === 'fe') ||
+            (hex1 === 'fe' && hex2 === 'ff')
+          ) {
             i += 2
             size -= 2
           }
@@ -130,11 +132,10 @@ export default class Id3Tagger {
             break
         }
       } else if (frameId === 'APIC') {
-        
       }
 
       i += size
-      frames.push({frameId, value})
+      frames.push({ frameId, value })
     }
     return frames
   }
@@ -146,9 +147,13 @@ export default class Id3Tagger {
       identifier += String.fromCharCode(byte)
     }
 
-    let version = `${dataView.getUint8(3)
+    let version = `${dataView
+      .getUint8(3)
       .toString(16)
-      .toUpperCase()}.${dataView.getUint8(4).toString(16).toUpperCase()}`
+      .toUpperCase()}.${dataView
+      .getUint8(4)
+      .toString(16)
+      .toUpperCase()}`
 
     let flags = dataView.getUint8(5).toString(2)
     let gap = 8 - flags.length
@@ -273,6 +278,6 @@ export default class Id3Tagger {
     let track = this._readString(dataView, offset, 126, 127)
     let genre = this._readString(dataView, offset, 127, 128)
 
-    return {title, artist, album, year, comment, zeroByte, track, genre}
+    return { title, artist, album, year, comment, zeroByte, track, genre }
   }
 }

@@ -1,6 +1,12 @@
-
 export default class Track {
-  constructor (id, title = '', artists = [], album = {}, number = 0, discNumber = 0) {
+  constructor (
+    id,
+    title = '',
+    artists = [],
+    album = {},
+    number = 0,
+    discNumber = 0
+  ) {
     this._title = title
     this._artists = artists
     this._album = album
@@ -16,8 +22,14 @@ export default class Track {
   }
 
   toString () {
-    return `Track {title: ${this.title}, artists: ${this.artists.map(artist => artist.name)}, ` +
-      `album: ${this.album.name}, number: ${this.number}, discNumber: ${this.discNumber}, id: ${this.id}}`
+    return (
+      `Track {title: ${this.title}, artists: ${this.artists.map(
+        artist => artist.name
+      )}, ` +
+      `album: ${this.album.name}, number: ${this.number}, discNumber: ${
+        this.discNumber
+      }, id: ${this.id}}`
+    )
   }
 
   get title () {

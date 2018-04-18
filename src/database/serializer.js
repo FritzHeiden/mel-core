@@ -11,7 +11,7 @@ serializer.serializeTrack = track => {
   let album = track.album.id
   let number = track.number
   let discNumber = track.discNumber
-  return {id, title, number, album, discNumber, artists}
+  return { id, title, number, album, discNumber, artists }
 }
 
 serializer.serializeAlbum = album => {
@@ -25,7 +25,7 @@ serializer.serializeAlbum = album => {
   let year = album.year
   let featureArtists = album.featureArtists.map(artist => artist.id)
   let tracks = album.tracks.map(track => track.id)
-  return {id, artist, title, year, featureArtists, tracks}
+  return { id, artist, title, year, featureArtists, tracks }
 }
 
 serializer.serializeArtist = artist => {
@@ -36,9 +36,10 @@ serializer.serializeArtist = artist => {
     let id = artist.id
     let name = artist.name
     let albums = artist.albums ? artist.albums.map(album => album.id) : []
-    let featureAlbums = artist.featureAlbums ? artist.featureAlbums.map(
-      album => album.id) : []
-    return {id, name, albums, featureAlbums}
+    let featureAlbums = artist.featureAlbums
+      ? artist.featureAlbums.map(album => album.id)
+      : []
+    return { id, name, albums, featureAlbums }
   } catch (error) {
     throw new Error(`Could not serialize artist: ${error}`)
   }
@@ -61,7 +62,7 @@ serializer.serializeFile = file => {
   let type = file.type
   let lastModified = file.lastModified
   let trackId = file.track.id
-  return {path, type, lastModified, trackId}
+  return { path, type, lastModified, trackId }
 }
 
 export default serializer

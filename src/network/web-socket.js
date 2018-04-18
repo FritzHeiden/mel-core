@@ -4,7 +4,9 @@ export default class WebSocket {
   }
 
   on (event, callback) {
-    throw new Error('Function WebSocket.on(event, callback) is not implemented!')
+    throw new Error(
+      'Function WebSocket.on(event, callback) is not implemented!'
+    )
   }
 
   emit (event, data) {

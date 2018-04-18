@@ -1,7 +1,6 @@
-import Serializer from 'src/database/serializer'
-import Deserializer from 'src/database/deserializer'
-import crypto from 'crypto'
-import JobQueue from 'src/job-qeue'
+import Serializer from '../database/serializer'
+import Deserializer from '../database/deserializer'
+import JobQueue from '../tools/job-qeue'
 
 const IDENTITY = 'id'
 const MAX_READING_JOBS = 5
@@ -14,13 +13,21 @@ export default class Database {
     this._writingQueue = new JobQueue(MAX_WRITING_JOBS)
     this._queueWriting = this._writingQueue.queueJob.bind(this._writingQueue)
     this._persistingFileQueue = new JobQueue(1)
-    this._queuePersistingFile = this._persistingFileQueue.queueJob.bind(this._persistingFileQueue)
+    this._queuePersistingFile = this._persistingFileQueue.queueJob.bind(
+      this._persistingFileQueue
+    )
     this._persistingTrackQueue = new JobQueue(1)
-    this._queuePersistingTrack = this._persistingTrackQueue.queueJob.bind(this._persistingTrackQueue)
+    this._queuePersistingTrack = this._persistingTrackQueue.queueJob.bind(
+      this._persistingTrackQueue
+    )
     this._persistingAlbumQueue = new JobQueue(1)
-    this._queuePersistingAlbum = this._persistingAlbumQueue.queueJob.bind(this._persistingAlbumQueue)
+    this._queuePersistingAlbum = this._persistingAlbumQueue.queueJob.bind(
+      this._persistingAlbumQueue
+    )
     this._persistingArtistQueue = new JobQueue(1)
-    this._queuePersistingArtist = this._persistingArtistQueue.queueJob.bind(this._persistingArtistQueue)
+    this._queuePersistingArtist = this._persistingArtistQueue.queueJob.bind(
+      this._persistingArtistQueue
+    )
   }
 
   async initialize () {
@@ -34,9 +41,9 @@ export default class Database {
   }
 
   _generateIdentity () {
-    let currentDate = (new Date()).valueOf().toString()
+    let currentDate = new Date().valueOf().toString()
     let random = Math.random().toString()
-    return crypto.createHash('sha1').update(currentDate + random).digest('hex')
+    return 'tmp'
   }
 
   get identity () {
@@ -55,7 +62,7 @@ export default class Database {
   }
 
   async readTrack (trackId) {
-    let trackJson = await this._queueReading(() => this._readTrack((trackId)))
+    let trackJson = await this._queueReading(() => this._readTrack(trackId))
     return Deserializer.deserializeTrack(trackJson)
   }
 
@@ -248,6 +255,7 @@ export default class Database {
 
   async _updateDatabaseMetaData (key, value) {
     throw new Error(
-      'Database._updateDatabaseMetaData(key, value) not implemented!')
+      'Database._updateDatabaseMetaData(key, value) not implemented!'
+    )
   }
 }

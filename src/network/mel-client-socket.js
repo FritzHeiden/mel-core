@@ -16,7 +16,7 @@ export default class MelClientSocket {
 
   getArtist (artistId) {
     return new Promise((resolve, reject) => {
-      this._webSocket.emit('get_artist', {artistId})
+      this._webSocket.emit('get_artist', { artistId })
       this._webSocket.on('get_artist', artist => {
         resolve(Deserializer.deserializeArtist(artist))
       })
@@ -25,7 +25,7 @@ export default class MelClientSocket {
 
   getAlbum (albumId) {
     return new Promise((resolve, reject) => {
-      this._webSocket.emit('get_album', {albumId})
+      this._webSocket.emit('get_album', { albumId })
       this._webSocket.on('get_album', albumJson => {
         resolve(Deserializer.deserializeAlbum(albumJson))
       })
@@ -34,7 +34,7 @@ export default class MelClientSocket {
 
   getTrack (trackId) {
     return new Promise((resolve, reject) => {
-      this._webSocket.emit('get_track', {trackId})
+      this._webSocket.emit('get_track', { trackId })
       this._webSocket.on('get_track', trackJson => {
         let track = Deserializer.deserializeTrack(trackJson)
         resolve(track)

@@ -1,7 +1,6 @@
 import Serializer from '../database/serializer'
 
-const
-  GET_ARTISTS = 'get_artists',
+const GET_ARTISTS = 'get_artists',
   GET_ARTIST = 'get_artist',
   GET_ALBUM = 'get_album',
   GET_TRACK = 'get_track'
@@ -26,32 +25,34 @@ export default class MelServerSocket {
   }
 
   _getArtists (socket) {
-    this._database.readArtists()
+    this._database
+      .readArtists()
       .then(artists => {
-        socket.emit(GET_ARTISTS,
-          Serializer.serializeArtists(artists))
+        socket.emit(GET_ARTISTS, Serializer.serializeArtists(artists))
       })
       .catch(err => console.error(err.stack))
   }
 
   _getArtist (socket, data) {
-    this._database.readArtist(data.artistId)
-      .then(artist => socket.emit(GET_ARTIST,
-        Serializer.serializeArtist(artist)))
+    this._database
+      .readArtist(data.artistId)
+      .then(artist =>
+        socket.emit(GET_ARTIST, Serializer.serializeArtist(artist))
+      )
       .catch(err => console.error(err.stack))
   }
 
   _getAlbum (socket, data) {
-    this._database.readAlbum(data.albumId)
-      .then(album => socket.emit(GET_ALBUM,
-          Serializer.serializeAlbum(album)))
+    this._database
+      .readAlbum(data.albumId)
+      .then(album => socket.emit(GET_ALBUM, Serializer.serializeAlbum(album)))
       .catch(err => console.error(err.stack))
   }
 
   _getTrack (socket, data) {
-    this._database.readTrack(data.trackId)
-      .then(track => socket.emit(GET_TRACK,
-          Serializer.serializeTrack(track)))
+    this._database
+      .readTrack(data.trackId)
+      .then(track => socket.emit(GET_TRACK, Serializer.serializeTrack(track)))
       .catch(err => console.error(err.stack))
   }
 

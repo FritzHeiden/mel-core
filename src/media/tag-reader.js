@@ -45,7 +45,14 @@ export default class TagReader {
     let trackTitle = tags.trackTitle
     let trackNumber = tags.trackNumber
     let discNumber = tags.discNumber
-    let track = new Track(undefined, trackTitle, trackArtists, album, trackNumber, discNumber)
+    let track = new Track(
+      undefined,
+      trackTitle,
+      trackArtists,
+      album,
+      trackNumber,
+      discNumber
+    )
     track.id = IdGenerator.getTrackId(track)
 
     album.addTrack(track)
@@ -58,13 +65,14 @@ export default class TagReader {
 
     albumArtist.addAlbum(album)
 
-
     return track
   }
 
   _evaluateTags (tags) {
     let year = tags.year ? parseInt(tags.year.split('-')[0]) : undefined
-    let trackNumber = tags.trackNumber ? parseInt(tags.trackNumber.split('/')[0]) : 0
+    let trackNumber = tags.trackNumber
+      ? parseInt(tags.trackNumber.split('/')[0])
+      : 0
     let discNumber = tags.discNumber ? parseInt(tags.discNumber) : 1
 
     let trackArtistNames = []
@@ -72,14 +80,22 @@ export default class TagReader {
     if (trackTitle) {
       let result = this._analyseFeatureArtists(tags.trackTitle)
       trackTitle = result.string.replace(/ +/g, ' ').trim()
-      trackArtistNames.concat(result.artistNames.filter(artistName => trackArtistNames.indexOf(artistName) === -1))
+      trackArtistNames.concat(
+        result.artistNames.filter(
+          artistName => trackArtistNames.indexOf(artistName) === -1
+        )
+      )
     }
 
     let trackArtistName = tags.artistName
     if (trackArtistName) {
       let result = this._analyseFeatureArtists(trackArtistName)
       trackArtistName = result.string.replace(/ +/g, ' ').trim()
-      trackArtistNames.concat(result.artistNames.filter(artistName => trackArtistNames.indexOf(artistName) === -1))
+      trackArtistNames.concat(
+        result.artistNames.filter(
+          artistName => trackArtistNames.indexOf(artistName) === -1
+        )
+      )
       trackArtistNames.push(trackArtistName)
     }
 
@@ -87,13 +103,27 @@ export default class TagReader {
     if (albumArtistName) {
       let result = this._analyseFeatureArtists(albumArtistName)
       albumArtistName = result.string.replace(/ +/g, ' ').trim()
-      trackArtistNames.concat(result.artistNames.filter(artistName => trackArtistNames.indexOf(artistName) === -1))
+      trackArtistNames.concat(
+        result.artistNames.filter(
+          artistName => trackArtistNames.indexOf(artistName) === -1
+        )
+      )
     }
 
-    if (!albumArtistName || albumArtistName === '') albumArtistName = trackArtistName
+    if (!albumArtistName || albumArtistName === '') {
+      albumArtistName = trackArtistName
+    }
     let albumTitle = tags.albumTitle
 
-    return {trackTitle, year, trackNumber, discNumber, trackArtistNames, albumArtistName, albumTitle}
+    return {
+      trackTitle,
+      year,
+      trackNumber,
+      discNumber,
+      trackArtistNames,
+      albumArtistName,
+      albumTitle
+    }
   }
 
   _analyseFeatureArtists (string) {
@@ -109,18 +139,27 @@ export default class TagReader {
         let endIndex = artistListString.indexOf(suffix)
         if (endIndex !== -1) {
           artistListString = artistListString.substr(0, endIndex)
-          artistListString.split(featurePattern.delimiter).map(artist => artist.trim()).forEach(artist => artistNames.push(artist))
+          artistListString
+            .split(featurePattern.delimiter)
+            .map(artist => artist.trim())
+            .forEach(artist => artistNames.push(artist))
 
           let last = artistNames.slice(-1)
           artistNames = artistNames.slice(0, artistNames.length - 1)
-          last[0].split(featurePattern.endingDelimiter).forEach(artist => artistNames.push(artist.trim().replace(/ +/g, ' ')))
+          last[0]
+            .split(featurePattern.endingDelimiter)
+            .forEach(artist =>
+              artistNames.push(artist.trim().replace(/ +/g, ' '))
+            )
 
           newString = string.substr(0, string.indexOf(prefix))
-          newString = newString + string.substr(string.indexOf(suffix) + suffix.length, string.length)
+          newString =
+            newString +
+            string.substr(string.indexOf(suffix) + suffix.length, string.length)
           newString = newString.replace(/ +/g, ' ')
         }
       }
     })
-    return {string: newString, artistNames}
+    return { string: newString, artistNames }
   }
 }
