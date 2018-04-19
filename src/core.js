@@ -17,7 +17,7 @@ import JobQueue from './tools/job-qeue'
 // Dependency for web app
 require.context('mel-web/dist', true, /.+/)
 
-const RELATIVE_CONFIG_PATH = '/mel.config'
+const RELATIVE_CONFIG_PATH = '/config.json'
 
 class MelCore {
   async initialize () {
