@@ -8,7 +8,7 @@
   "private": false,
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "format": "prettier-standard src/**/*.js*"
+    "format": "prettier-standard src/**/*.js* src/*.js*"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
