@@ -21,8 +21,7 @@ export default class ApiHandler {
 
       response.status = 200
       response.setHeader('Content-Type', 'application/json')
-      response.body = JSON.stringify({ artists })
-      response.send()
+      response.send(JSON.stringify({ artists }))
     })
   }
 }

@@ -1,3 +1,5 @@
+import Response from '../network/response'
+
 export default class WebServer {
   addRoutes (routes) {
     routes.forEach(route => this.addRoute(route))
@@ -6,7 +8,7 @@ export default class WebServer {
   addRoute (route) {
     let method = route.method
     let uri = route.uri
-    let callback = route.callback
+    let callback = this._wrapCallback(route.callback)
     switch (method.toUpperCase()) {
       case 'GET':
         this._get(uri, callback)
@@ -25,6 +27,15 @@ export default class WebServer {
 
   addStaticDirectory (directory) {
     this._static(directory)
+  }
+
+  _wrapCallback (callback) {
+    return (request, response) => {
+      if (!(response instanceof Response)) {
+        throw Error('Expecting 2nd parameter of callback to be Response!')
+      }
+      callback(request, response)
+    }
   }
 
   _get (uri, callback) {
