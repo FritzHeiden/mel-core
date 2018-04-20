@@ -226,6 +226,17 @@ export default class Database {
     throw new Error('Database._readFile(filePath) not implemented!')
   }
 
+  async readFilesByTrackId (trackId) {
+    let filesJson = await this._queueReading(() =>
+      this._readFilesByTrackId(trackId)
+    )
+    return Deserializer.deserializeFiles(filesJson)
+  }
+
+  async _readFilesByTrackId (trackId) {
+    throw new Error('Database._readFilesByTrackId(trackId) not implemented!')
+  }
+
   async updateFile (file) {
     let fileJson = Serializer.serializeFile(file)
     return this._queueWriting(() => this._updateFile(fileJson))

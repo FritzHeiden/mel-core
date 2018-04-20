@@ -54,7 +54,7 @@ class MelCore {
 
     // API Handler
     try {
-      this._apiHandler = new ApiHandler(this._database)
+      this._apiHandler = new ApiHandler(this._database, this._fileSystem)
       this._webServer.addRoutes(this._apiHandler.getRoutes())
     } catch (err) {
       console.error('Could not initialize api handler: ' + err)

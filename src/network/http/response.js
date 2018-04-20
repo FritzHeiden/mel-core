@@ -21,6 +21,10 @@ export default class Response {
     throw new Error('Response.sendFile(relativeFilePath) is not implemented!')
   }
 
+  sendBuffer (arrayBuffer) {
+    throw new Error('Response.sendBuffer(arrayBuffer) is not implemented!')
+  }
+
   setHeader (field, value) {
     throw new Error('Response.setHeader(field, value) is not implemented!')
   }

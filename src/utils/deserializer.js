@@ -76,12 +76,20 @@ deserializer.deserializeFile = fileJson => {
   if (!fileJson) {
     return null
   }
-  if (!fileJson) return null
+
   let path = fileJson.path
   let type = fileJson.type
   let lastModified = fileJson.lastModified
   let track = new Track(fileJson.trackId)
   return new File(path, type, null, lastModified, track)
+}
+
+deserializer.deserializeFiles = filesJson => {
+  if (!filesJson) {
+    return null
+  }
+
+  return filesJson.map(fileJson => deserializer.deserializeFile(fileJson))
 }
 
 export default deserializer
