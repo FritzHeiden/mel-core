@@ -1,4 +1,4 @@
-import Deserializer from '../database/deserializer'
+import Deserializer from '../../utils/deserializer'
 
 export default class MelClientSocket {
   constructor (webSocket) {

@@ -1,6 +1,6 @@
-import Response from '../network/response'
+import Response from './response'
 import Route from './route'
-import Request from '../network/request'
+import Request from './request'
 
 export default class WebServer {
   addRoutes (routes) {

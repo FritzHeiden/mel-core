@@ -1,5 +1,5 @@
 import File from '../data/files/file'
-import JobQueue from '../tools/job-qeue'
+import JobQueue from '../utils/job-qeue'
 
 const MAX_READING_JOBS = 1
 

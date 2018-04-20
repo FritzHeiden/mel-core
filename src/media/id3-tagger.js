@@ -1,5 +1,5 @@
 import File from '../data/files/file'
-import UTF8Transcoder from '../tools/utf8-transcoder'
+import UTF8Transcoder from '../utils/utf8-transcoder'
 
 export default class Id3Tagger {
   async readTags (file) {

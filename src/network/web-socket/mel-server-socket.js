@@ -1,4 +1,4 @@
-import Serializer from '../database/serializer'
+import Serializer from '../../utils/serializer'
 
 const GET_ARTISTS = 'get_artists',
   GET_ARTIST = 'get_artist',

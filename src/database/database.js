@@ -1,6 +1,6 @@
-import Serializer from '../database/serializer'
-import Deserializer from '../database/deserializer'
-import JobQueue from '../tools/job-qeue'
+import Serializer from '../utils/serializer'
+import Deserializer from '../utils/deserializer'
+import JobQueue from '../utils/job-qeue'
 
 const IDENTITY = 'id'
 const MAX_READING_JOBS = 5

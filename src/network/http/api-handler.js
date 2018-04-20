@@ -1,4 +1,4 @@
-import Serializer from '../database/serializer'
+import Serializer from '../../utils/serializer'
 import Route from './route'
 
 export default class ApiHandler {
