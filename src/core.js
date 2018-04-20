@@ -14,6 +14,7 @@ import WebSocket from './network/web-socket'
 import FileSystem from './files/file-system'
 import JobQueue from './tools/job-qeue'
 import Response from './network/response'
+import Request from './network/request'
 
 // Dependency for web app
 require.context('mel-web/dist', true, /.+/)
@@ -160,5 +161,6 @@ export {
   WebServer,
   Database,
   MelCore,
-  Response
+  Response,
+  Request
 }
