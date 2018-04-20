@@ -1,4 +1,5 @@
 import Serializer from '../database/serializer'
+import Route from './route'
 
 export default class ApiHandler {
   constructor (database) {
@@ -6,13 +7,8 @@ export default class ApiHandler {
   }
 
   getRoutes () {
-    return [
-      {
-        uri: '/api/artists',
-        method: 'GET',
-        callback: this._getArtists.bind(this)
-      }
-    ]
+    const { GET } = Route
+    return [new Route('/api/artists', GET, this._getArtists.bind(this))]
   }
 
   _getArtists (request, response) {

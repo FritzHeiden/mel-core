@@ -23,12 +23,13 @@ export default class Track {
 
   toString () {
     return (
-      `Track {title: ${this.title}, artists: ${this.artists.map(
-        artist => artist.name
-      )}, ` +
-      `album: ${this.album.name}, number: ${this.number}, discNumber: ${
-        this.discNumber
-      }, id: ${this.id}}`
+      `Track {` +
+      `title: ${this.title}, ` +
+      `artists: ${this.artists.map(artist => artist.name)}, ` +
+      `album: ${this.album.name}, ` +
+      `number: ${this.number}, ` +
+      `discNumber: ${this.discNumber}, ` +
+      `id: ${this.id}}`
     )
   }
 

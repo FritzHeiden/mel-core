@@ -1,4 +1,5 @@
 import Response from '../network/response'
+import Route from './route'
 
 export default class WebServer {
   addRoutes (routes) {
@@ -6,20 +7,21 @@ export default class WebServer {
   }
 
   addRoute (route) {
-    let method = route.method
-    let uri = route.uri
-    let callback = this._wrapCallback(route.callback)
-    switch (method.toUpperCase()) {
-      case 'GET':
+    const { GET, POST, PUT, DELETE } = Route
+    let method = route.getMethod()
+    let uri = route.getUri()
+    let callback = this._wrapCallback(route.getHandler())
+    switch (method) {
+      case GET:
         this._get(uri, callback)
         break
-      case 'POST':
+      case POST:
         this._post(uri, callback)
         break
-      case 'PUT':
+      case PUT:
         this._put(uri, callback)
         break
-      case 'DELETE':
+      case DELETE:
         this._delete(uri, callback)
         break
     }

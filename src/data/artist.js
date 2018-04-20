@@ -32,12 +32,11 @@ export default class Artist {
 
   toString () {
     return (
-      `Artist {name: ${this.name}, albums: ${this.albums.map(
-        album => album.title
-      )}, ` +
-      `featureAlbums: ${this.featureAlbums.map(album => album.title)}, id: ${
-        this.id
-      }}`
+      `Artist {` +
+      `name: ${this.name}, ` +
+      `albums: ${this.albums.map(album => album.title)}, ` +
+      `featureAlbums: ${this.featureAlbums.map(album => album.title)}, ` +
+      `id: ${this.id}}`
     )
   }
 

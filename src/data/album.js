@@ -35,12 +35,13 @@ export default class Album {
 
   toString () {
     return (
-      `Album {title: ${this.title}, year: ${this.year}, trackCount: ${
-        this.tracks.length
-      }, ` +
-      `artist: ${this.artist.name}, featureArtists: ${this.featureArtists.map(
-        artist => artist.name
-      )}, id: ${this.id}}`
+      `Album {` +
+      `title: ${this.title}, ` +
+      `year: ${this.year}, ` +
+      `trackCount: ${this.tracks.length}, ` +
+      `artist: ${this.artist.name}, ` +
+      `featureArtists: ${this.featureArtists.map(artist => artist.name)}, ` +
+      `id: ${this.id}}`
     )
   }
 
