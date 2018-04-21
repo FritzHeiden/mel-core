@@ -17,7 +17,7 @@
     "babel-preset-env": "^1.5.2",
     "babel-runtime": "^6.26.0",
     "file-loader": "^1.1.11",
-    "mel-web": "git+https://github.com/fritzendgltig/mel-web",
+    "mel-web": "fritzendgltig/mel-core#develop",
     "prettier-standard": "^8.0.1",
     "standard": "^10.0.3",
     "webpack": "^4.5.0",
