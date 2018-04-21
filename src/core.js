@@ -10,6 +10,7 @@ import Album from './data/album'
 import Artist from './data/artist'
 import MelServerSocket from './network/web-socket/mel-server-socket'
 import MelClientSocket from './network/web-socket/mel-client-socket'
+import MelHttpService from './network/http/mel-http-service'
 import WebSocket from './network/web-socket/web-socket'
 import FileSystem from './files/file-system'
 import JobQueue from './utils/job-qeue'
@@ -157,6 +158,7 @@ export {
   File,
   WebSocket,
   MelClientSocket,
+  MelHttpService,
   FileSystem,
   WebServer,
   Database,

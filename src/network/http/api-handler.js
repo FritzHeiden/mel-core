@@ -31,6 +31,7 @@ export default class ApiHandler {
     this._db.readFilesByTrackId(trackId).then(files => {
       const file = files[0]
       this._fileSystem.readFileBuffer(file.path).then(data => {
+        response.setHeader('Access-Control-Allow-Origin', '*')
         response.sendBuffer(data)
       })
     })

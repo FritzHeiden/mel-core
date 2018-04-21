@@ -71,9 +71,13 @@ export default class Configuration {
   }
 
   toJsonString () {
-    return JSON.stringify({
-      scanner: this.scanner.toDataObject(),
-      tag_reader: this.tagReader.toDataObject()
-    }, null, '  ')
+    return JSON.stringify(
+      {
+        scanner: this.scanner.toDataObject(),
+        tag_reader: this.tagReader.toDataObject()
+      },
+      null,
+      '  '
+    )
   }
 }
