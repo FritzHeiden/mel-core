@@ -251,7 +251,7 @@ export default class Database {
   }
 
   async _persistFile (file) {
-    if (!await this.readFile(file.id)) {
+    if (!(await this.readFile(file.id))) {
       return this.createFile(file)
     } else {
       return this.updateFile(file)

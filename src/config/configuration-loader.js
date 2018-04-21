@@ -35,15 +35,14 @@ export default class ConfigurationLoader {
   }
 
   async loadConfiguration () {
-    if (await this._fileSystem.stats(this._configPath)) {
-      let configJson = await this._fileSystem.readFile(this._configPath)
+    let configJson = await this._fileSystem.readFile(this._configPath)
+    if (configJson) {
       configJson = JSON.parse(configJson)
       return this._createConfig(configJson)
     } else {
       let configuration = this._createConfig(DEFAULT_CONFIG)
-      if (await this.saveConfiguration(configuration)) {
-        return configuration
-      }
+      this.saveConfiguration(configuration)
+      return configuration
     }
   }
 
