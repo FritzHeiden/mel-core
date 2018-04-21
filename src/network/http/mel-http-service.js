@@ -34,9 +34,7 @@ export default class MelHttpService {
     return new Promise((resolve, reject) =>
       this._sendRequest('GET', '/api/artists')
         .then(response =>
-          resolve(
-            Deserializer.deserializeArtists(JSON.parse(response))
-          )
+          resolve(Deserializer.deserializeArtists(JSON.parse(response)))
         )
         .catch(err => reject(err))
     )
@@ -54,26 +52,39 @@ export default class MelHttpService {
   //   )
   // }
 
-  downloadTrack (trackId) {
+  downloadTrack (trackId, progressHandler) {
+    let options = {
+      responseType: 'arraybuffer'
+    }
+    if (progressHandler) {
+      options.progressHandler = progress => {
+        progressHandler(progress, trackId)
+      }
+    }
     return new Promise((resolve, reject) => {
-      this._sendRequest('GET', `/api/tracks/${trackId}/data`, {responseType: 'arraybuffer'})
+      this._sendRequest('GET', `/api/tracks/${trackId}/data`, options)
         .then(arrayBuffer => resolve(arrayBuffer))
         .catch(error => reject(error))
     })
   }
 
-  _sendRequest (method, uri, {responseType}) {
+  _sendRequest (method, uri, { responseType, progressHandler }) {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest()
-      request.onreadystatechange = () => {
-        if (request.readyState === 4) {
-          if (request.status === 200) {
-            resolve(request.response)
-          } else {
-            reject(request.status)
-          }
+      request.addEventListener('load', event => {
+        if (request.status === 200) {
+          resolve(request.response)
+        } else {
+          reject(request.status)
         }
+      })
+
+      if (progressHandler) {
+        request.addEventListener('progress', event => {
+          progressHandler(event.loaded / event.total)
+        })
       }
+
       if (responseType) {
         request.responseType = responseType
       }
