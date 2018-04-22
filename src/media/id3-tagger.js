@@ -1,5 +1,6 @@
 import File from '../data/files/file'
 import UTF8Transcoder from '../utils/utf8-transcoder'
+import * as ID3Parser from 'id3-parser'
 
 export default class Id3Tagger {
   async readTags (file) {
@@ -7,8 +8,28 @@ export default class Id3Tagger {
       throw new Error('First parameter must be of type File!')
     }
 
-    let dataView = new DataView(file.buffer)
-    return this._readID3v2(dataView)
+    let {
+      title: trackTitle,
+      artist: artistName,
+      band: albumArtistName,
+      year,
+      track: trackNumber,
+      'set-part': discNumber,
+      album: albumTitle
+    } = ID3Parser.parse(new Uint8Array(file.buffer))
+
+    return {
+      trackTitle,
+      artistName,
+      albumArtistName,
+      albumTitle,
+      year,
+      trackNumber,
+      discNumber
+    }
+
+    // let dataView = new DataView(file.buffer)
+    // return this._readID3v2(dataView)
   }
 
   _synchsafeIntToInt (synchsafeInt) {
@@ -212,7 +233,7 @@ export default class Id3Tagger {
     let frames = this._readID3v2Frames(dataView, header)
 
     // console.log(header);
-    console.log(frames)
+    // console.log(frames)
     let tags = {}
     for (let i = 0; i < frames.length; i++) {
       let frame = frames[i]

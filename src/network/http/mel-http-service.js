@@ -69,9 +69,11 @@ export default class MelHttpService {
   getTrackDataInfo (trackId) {
     return new Promise((resolve, reject) => {
       this._sendRequest('HEAD', `/api/tracks/${trackId}/data`)
-        .then(response => resolve({
-          size: parseInt(response.headers['content-length'])
-        }))
+        .then(response =>
+          resolve({
+            size: parseInt(response.headers['content-length'])
+          })
+        )
         .catch(error => reject(error))
     })
   }
