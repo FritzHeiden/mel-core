@@ -8,8 +8,11 @@ export default class Artist {
 
   addAlbum (newAlbum) {
     newAlbum.artist = this
-    if (this._albums.findIndex(album => album.id === newAlbum.id) === -1) {
+    let album = this._albums.find(album => album.id === newAlbum.id)
+    if (!album) {
       this._albums.push(newAlbum)
+    } else {
+      album.addTracks(newAlbum.tracks)
     }
   }
 
