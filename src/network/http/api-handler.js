@@ -32,7 +32,7 @@ export default class ApiHandler {
       const file = files[0]
       this._fileSystem.readFileBuffer(file.path).then(data => {
         response.setHeader('Access-Control-Allow-Origin', '*')
-        response.setHeader('Access-Control-Expose-Headers', '*')
+        response.setHeader('Access-Control-Expose-Headers', 'Content-Length')
         response.sendBuffer(data)
       })
     })

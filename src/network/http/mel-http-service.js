@@ -57,9 +57,7 @@ export default class MelHttpService {
       responseType: 'arraybuffer'
     }
     if (progressHandler) {
-      options.progressHandler = progress => {
-        progressHandler(progress, trackId)
-      }
+      options.progressHandler = progressHandler
     }
     return new Promise((resolve, reject) => {
       this._sendRequest('GET', `/api/tracks/${trackId}/data`, options)
@@ -94,7 +92,7 @@ export default class MelHttpService {
 
       if (progressHandler) {
         request.addEventListener('progress', event => {
-          progressHandler(event.loaded / event.total)
+          progressHandler(event.loaded, event.total)
         })
       }
 
