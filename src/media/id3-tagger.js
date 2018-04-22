@@ -15,7 +15,8 @@ export default class Id3Tagger {
       year,
       track: trackNumber,
       'set-part': discNumber,
-      album: albumTitle
+      album: albumTitle,
+      image: albumCover
     } = ID3Parser.parse(new Uint8Array(file.buffer))
 
     return {
@@ -25,7 +26,8 @@ export default class Id3Tagger {
       albumTitle,
       year,
       trackNumber,
-      discNumber
+      discNumber,
+      albumCover
     }
 
     // let dataView = new DataView(file.buffer)

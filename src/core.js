@@ -16,6 +16,7 @@ import FileSystem from './files/file-system'
 import JobQueue from './utils/job-qeue'
 import Response from './network/http/response'
 import Request from './network/http/request'
+import AlbumCoverManager from './utils/album-cover-manager'
 
 // Dependency for web app
 require.context('mel-web/dist', true, /.+/)
@@ -79,6 +80,9 @@ class MelCore {
       console.error('Could not initialize network adapter: ' + err)
     }
 
+    // Album Cover Manager
+    this._albumCoverManager = new AlbumCoverManager(this._fileSystem)
+
     await this._webServer.start()
   }
 
@@ -100,6 +104,9 @@ class MelCore {
 
           // If file does not exist in DB read its ID3 tags
           newFile.track = await this._tagReader.readTags(newFile)
+
+          await this._albumCoverManager.saveAlbumCover(newFile.track.album)
+          newFile.track.album.deleteAlbumCoverBuffer()
 
           newFile.deleteBuffer()
           // Persist file in DB

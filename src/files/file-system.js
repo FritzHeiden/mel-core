@@ -15,11 +15,21 @@ export default class FileSystem {
     throw new Error('FileSystem.writeFile(filePath, data) not implemented!')
   }
 
+  async writeBinaryFile (filePath, data) {
+    throw new Error(
+      'FileSystem.writeBinaryFile(filePath, data) not impemented!'
+    )
+  }
+
   async readDir (directoryPath) {
     throw new Error('FileSystem.readDir(directoryPath) not implemented!')
   }
 
   async readFileBuffer (filePath) {
     throw new Error('FileSystem.readFileBuffer(filePath) not implemented!')
+  }
+
+  async makeDirectory (directoryPath) {
+    throw new Error('FileSystem.makeDirectory(directoryPath) not implemented!')
   }
 }

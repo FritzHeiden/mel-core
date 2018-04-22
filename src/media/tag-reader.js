@@ -39,7 +39,15 @@ export default class TagReader {
 
     let albumTitle = tags.albumTitle
     let year = tags.year
-    let album = new Album(undefined, albumArtist, albumTitle, year, [], [])
+    let album = new Album(
+      undefined,
+      albumArtist,
+      albumTitle,
+      year,
+      [],
+      [],
+      tags.albumCover
+    )
     album.id = IdGenerator.getAlbumId(album, album.artist)
 
     let trackTitle = tags.trackTitle
@@ -114,6 +122,7 @@ export default class TagReader {
       albumArtistName = trackArtistName
     }
     let albumTitle = tags.albumTitle
+    let albumCover = tags.albumCover
 
     return {
       trackTitle,
@@ -122,7 +131,8 @@ export default class TagReader {
       discNumber,
       trackArtistNames,
       albumArtistName,
-      albumTitle
+      albumTitle,
+      albumCover
     }
   }
 

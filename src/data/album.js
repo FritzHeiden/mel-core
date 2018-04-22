@@ -1,11 +1,20 @@
 export default class Album {
-  constructor (id, artist, title, year, tracks = [], featureArtists = []) {
+  constructor (
+    id,
+    artist,
+    title,
+    year,
+    tracks = [],
+    featureArtists = [],
+    albumCover
+  ) {
     this._id = id
     this._title = title
     this._year = year
     this._tracks = tracks
     this._artist = artist
     this._featureArtists = featureArtists
+    this._albumCover = albumCover
   }
 
   addTrack (newTrack) {
@@ -43,6 +52,18 @@ export default class Album {
       `featureArtists: ${this.featureArtists.map(artist => artist.name)}, ` +
       `id: ${this.id}}`
     )
+  }
+
+  deleteAlbumCoverBuffer () {
+    delete this._albumCover
+  }
+
+  getAlbumCover () {
+    return this._albumCover
+  }
+
+  setAlbumCover (cover) {
+    this._albumCover = cover
   }
 
   set artist (artist) {

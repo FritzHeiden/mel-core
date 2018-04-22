@@ -1,9 +1,5 @@
 # ToDo
 
-## ID3 Reader
-There are ID3 libraries available on npm. Better use of those than 
-write one on my own.
-
 ## Download or Stream Tracks
 Use http to transfer the track files
 
@@ -16,6 +12,10 @@ There appears to be no suitable target for pure JavaScript bundles.
 Sticking with ```target: 'node'``` in the mean time.
 
 # Done
+
+## ID3 Reader
+There are ID3 libraries available on npm. Better use of those than 
+write one on my own. 
 
 ## polyfills
 babel-polyfill can only be used in non tool/library modules.
@@ -35,4 +35,4 @@ Find some way that allows to access module internal files relatively,
 so the module folder can be moved around without path problems.
 
 There is no way to do this yet. For now the web app is simply copied
-to the mel-server's dist folder, where mel-core expects it to be. 
+to the mel-server's dist folder, where mel-core expects it to be.
