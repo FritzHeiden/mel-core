@@ -54,9 +54,13 @@ class MelCore {
       console.error('Could not initialize database: ' + err)
     }
 
+    // Album Cover Manager
+    this._albumCoverManager = new AlbumCoverManager(this._fileSystem)
+    await this._albumCoverManager.initialize()
+
     // API Handler
     try {
-      this._apiHandler = new ApiHandler(this._database, this._fileSystem)
+      this._apiHandler = new ApiHandler(this._database, this._fileSystem, this._albumCoverManager)
       this._webServer.addRoutes(this._apiHandler.getRoutes())
     } catch (err) {
       console.error('Could not initialize api handler: ' + err)
@@ -79,9 +83,6 @@ class MelCore {
     } catch (err) {
       console.error('Could not initialize network adapter: ' + err)
     }
-
-    // Album Cover Manager
-    this._albumCoverManager = new AlbumCoverManager(this._fileSystem)
 
     await this._webServer.start()
   }
