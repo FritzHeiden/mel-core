@@ -66,19 +66,28 @@ export default class MelHttpService {
     })
   }
 
-  getTrackDataInfo (trackId) {
-    return new Promise((resolve, reject) => {
-      this._sendRequest('HEAD', `/api/tracks/${trackId}/data`)
-        .then(response =>
-          resolve({
-            size: parseInt(response.headers['content-length'])
-          })
-        )
-        .catch(error => reject(error))
-    })
+  async getTrackDataInfo (trackId) {
+    const response = await this._sendRequest(
+      'HEAD',
+      `/api/tracks/${trackId}/data`
+    )
+    return {
+      size: parseInt(response.headers['content-length'])
+    }
   }
 
-  _sendRequest (method, uri, { responseType, progressHandler } = {}) {
+  async getAlbumCover (albumId) {
+    const response = await this._sendRequest(
+      'GET',
+      `/api/albums/${albumId}/cover`,
+      {
+        responseType: 'arraybuffer'
+      }
+    )
+    return response.body
+  }
+
+  async _sendRequest (method, uri, { responseType, progressHandler } = {}) {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest()
       request.addEventListener('load', event => {

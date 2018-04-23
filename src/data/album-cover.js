@@ -10,7 +10,7 @@ export default class AlbumCover {
   }
 
   setBuffer (buffer) {
-    this._buffer = buffer1
+    this._buffer = buffer
   }
 
   getMime () {

@@ -8,7 +8,6 @@ export default class AlbumCoverManager {
     this._albumCoversPath =
       fileSystem.APPLICATION_DIRECTORY + RELATIVE_ALBUM_COVERS_PATH
     this._albumCovers = {}
-
   }
 
   async initialize () {
@@ -16,7 +15,12 @@ export default class AlbumCoverManager {
   }
 
   async saveAlbumCover (album) {
-    if (!album || !album.getAlbumCover || !album.getAlbumCover().data) {
+    if (
+      !album ||
+      !album.getAlbumCover ||
+      !album.getAlbumCover() ||
+      !album.getAlbumCover().data
+    ) {
       return
     }
 
@@ -33,13 +37,15 @@ export default class AlbumCoverManager {
       return
     }
 
+    this._albumCovers[album.id] = extension
+
     return this._fileSystem.writeBinaryFile(filePath, data)
   }
 
   async loadAlbumCovers () {
     const files = await this._fileSystem.readDir(this._albumCoversPath)
     files.forEach(file => {
-      const {0: albumId, 1: extension} = file.split('.')
+      const { 0: albumId, 1: extension } = file.split('.')
       this._albumCovers[albumId] = '.' + extension
     })
   }
