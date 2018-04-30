@@ -11,6 +11,9 @@ export default class AlbumCoverManager {
   }
 
   async initialize () {
+    if (!(await this._fileSystem.stats(this._albumCoversPath))) {
+      await this._fileSystem.makeDirectory(this._albumCoversPath)
+    }
     await this.loadAlbumCovers()
   }
 
@@ -22,10 +25,6 @@ export default class AlbumCoverManager {
       !album.getAlbumCover().data
     ) {
       return
-    }
-
-    if (!(await this._fileSystem.stats(this._albumCoversPath))) {
-      this._fileSystem.makeDirectory(this._albumCoversPath)
     }
 
     const { data, mime } = album.getAlbumCover()

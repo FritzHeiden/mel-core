@@ -47,16 +47,16 @@ class MelCore {
     }
     this._tagReader = new TagReader(this._configuration.tagReader)
 
+    // Album Cover Manager
+    this._albumCoverManager = new AlbumCoverManager(this._fileSystem)
+    await this._albumCoverManager.initialize()
+
     // Database
     try {
       await this._database.initialize()
     } catch (err) {
       console.error('Could not initialize database: ' + err)
     }
-
-    // Album Cover Manager
-    this._albumCoverManager = new AlbumCoverManager(this._fileSystem)
-    await this._albumCoverManager.initialize()
 
     // API Handler
     try {
