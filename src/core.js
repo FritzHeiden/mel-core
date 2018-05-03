@@ -17,6 +17,7 @@ import JobQueue from './utils/job-qeue'
 import Response from './network/http/response'
 import Request from './network/http/request'
 import AlbumCoverManager from './utils/album-cover-manager'
+import TrackDownloadService from './services/track-download-service'
 
 // Dependency for web app
 require.context('mel-web/dist', true, /.+/)
@@ -176,5 +177,6 @@ export {
   Database,
   MelCore,
   Response,
-  Request
+  Request,
+  TrackDownloadService
 }
