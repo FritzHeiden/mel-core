@@ -65,9 +65,12 @@ export default class AlbumCoverManager {
       case 'image/png':
         return '.png'
 
-      default:
       case 'image/jpeg':
       case 'image/jpg':
+        return '.jpg'
+
+      default:
+        console.warn('Unknown album cover mime type ' + mime)
         return '.jpg'
     }
   }
@@ -79,6 +82,8 @@ export default class AlbumCoverManager {
         return 'image/jpg'
       case '.png':
         return 'image/png'
+      default:
+        console.warn('Unknown album cover extension ' + extension)
     }
   }
 }
