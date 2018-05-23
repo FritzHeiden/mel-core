@@ -12,7 +12,6 @@ export default class Album {
     this._title = title
     this._year = year
     this._tracks = []
-    console.log('NEW ALBUM')
     this.addTracks(tracks)
     this._artist = artist
     this._featureArtists = featureArtists
@@ -21,7 +20,6 @@ export default class Album {
 
   addTrack (newTrack) {
     newTrack.album = this
-    console.log('ALBUM', this)
     if (this._tracks.findIndex(track => track.id === newTrack.id) === -1) {
       this._tracks.push(newTrack)
     }
