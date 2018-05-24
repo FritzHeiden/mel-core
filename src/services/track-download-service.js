@@ -190,6 +190,30 @@ class TrackDownloadService {
     }
   }
 
+  getStatistics () {
+    const tracks = []
+    const artists = []
+    const albums = []
+
+    this._queue.forEach(item => {
+      let track = item.getTrack()
+      if (tracks.indexOf(track.id) === -1) {
+        tracks.push(track.id)
+      }
+      if (albums.indexOf(track.album.id) === -1) {
+        albums.push(track.album.id)
+      }
+      if (artists.indexOf(track.album.artist.id) === -1) {
+        artists.push(track.album.artist.id)
+      }
+    })
+    return {
+      trackCount: tracks.length,
+      artistCount: artists.length,
+      albumCount: albums.length
+    }
+  }
+
   getState () {
     return this._state
   }
