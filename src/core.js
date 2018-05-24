@@ -18,6 +18,7 @@ import Response from './network/http/response'
 import Request from './network/http/request'
 import AlbumCoverManager from './utils/album-cover-manager'
 import TrackDownloadService from './services/track-download-service'
+import StringFormatter from './utils/string-formatter'
 
 // Dependency for web app
 require.context('mel-web/dist', true, /.+/)
@@ -178,5 +179,6 @@ export {
   MelCore,
   Response,
   Request,
-  TrackDownloadService
+  TrackDownloadService,
+  StringFormatter
 }
