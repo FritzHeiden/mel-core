@@ -21,9 +21,8 @@ const DEFAULT_CONFIG = {
 }
 
 export default class ConfigurationLoader {
-  constructor (configPath, fileSystem) {
+  constructor (fileSystem) {
     this._fileSystem = fileSystem
-    this._configPath = this._fileSystem.APPLICATION_DIRECTORY + configPath
   }
 
   _createConfig (config) {
@@ -51,5 +50,14 @@ export default class ConfigurationLoader {
       this._configPath,
       configuration.toJsonString()
     )
+  }
+
+  setConfigPath (configPath) {
+    this._configPath = configPath
+    return this
+  }
+
+  getConfigPath () {
+    return this._configPath
   }
 }

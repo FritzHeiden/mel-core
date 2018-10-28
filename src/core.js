@@ -20,20 +20,15 @@ import AlbumCoverManager from './utils/album-cover-manager'
 import TrackDownloadService from './services/track-download-service'
 import StringFormatter from './utils/string-formatter'
 
-// Dependency for web app
-require.context('mel-web/dist', true, /.+/)
-
-const RELATIVE_CONFIG_PATH = '/config.json'
-
 class MelCore {
-  async initialize () {
+  async initialize ({ configPath, melWebPath }) {
     // Load Configuration
     try {
-      let configurationLoader = new ConfigurationLoader(
-        RELATIVE_CONFIG_PATH,
-        this._fileSystem
+      let configurationLoader = new ConfigurationLoader(this._fileSystem)
+      configurationLoader.setConfigPath(configPath)
+      this._configuration = await configurationLoader.loadConfiguration(
+        configPath
       )
-      this._configuration = await configurationLoader.loadConfiguration()
     } catch (err) {
       console.error('Could not load database: ' + err)
     }
@@ -73,9 +68,7 @@ class MelCore {
     }
 
     // Web App
-    this._webServer.addStaticDirectory(
-      this._fileSystem.APPLICATION_DIRECTORY + '/mel-web/'
-    )
+    this._webServer.addStaticDirectory(melWebPath)
 
     // Network Adapter
     try {
