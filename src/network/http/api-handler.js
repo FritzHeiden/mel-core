@@ -7,18 +7,21 @@ const CONTENT_LENGTH = 'Content-Length'
 const CONTENT_TYPE = 'Content-Type'
 
 export default class ApiHandler {
-  constructor (database, fileSystem, albumCoverManager) {
+  constructor (database, fileSystem, albumCoverManager, { webRoot } = {}) {
     this._db = database
     this._fileSystem = fileSystem
     this._albumCoverManager = albumCoverManager
+    this._webRoot = '/'
+    if (webRoot) this._webRoot = webRoot
+    if (!this._webRoot.endsWith('/')) this._webRoot += '/'
   }
 
   getRoutes () {
     const { GET } = Route
     return [
-      new Route('/api/artists', GET, this._getArtists.bind(this)),
-      new Route('/api/tracks/*/data', GET, this._getTrackData.bind(this)),
-      new Route('/api/albums/*/cover', GET, this._getAlbumCover.bind(this))
+      new Route(`api/artists`, GET, this._getArtists.bind(this)),
+      new Route(`api/tracks/*/data`, GET, this._getTrackData.bind(this)),
+      new Route(`api/albums/*/cover`, GET, this._getAlbumCover.bind(this))
     ]
   }
 
@@ -36,7 +39,9 @@ export default class ApiHandler {
   }
 
   _getTrackData (request, response) {
-    const { 3: trackId } = request.getUrl().split('/')
+    let url = request.getUrl()
+    url = url.replace(new RegExp('^' + this._webRoot), '/')
+    const { 3: trackId } = url.split('/')
     this._db
       .readFilesByTrackId(trackId)
       .then(files => {
@@ -51,7 +56,9 @@ export default class ApiHandler {
   }
 
   _getAlbumCover (request, response) {
-    const { 3: albumId } = request.getUrl().split('/')
+    let url = request.getUrl()
+    url = url.replace(new RegExp('^' + this._webRoot), '/')
+    const { 3: albumId } = url.split('/')
     this._albumCoverManager
       .loadAlbumCover(albumId)
       .then(albumCover => {

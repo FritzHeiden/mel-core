@@ -18,7 +18,8 @@ export default class WebServer {
   }
 
   setWebRoot (webRoot) {
-    this._webRoot = webRoot
+    if (webRoot) this._webRoot = webRoot
+    if (!webRoot.endsWith('/')) this._webRoot += '/'
     return this
   }
 
@@ -32,13 +33,16 @@ export default class WebServer {
 
   apply () {
     this._routes.forEach(route => this._applyRoute(route))
-    this._directories.forEach(directory => this._static(directory))
+    this._directories.forEach(directory =>
+      this._static(directory, { 'Content-Base': this._webRoot })
+    )
   }
 
   _applyRoute (route) {
     const { GET, POST, PUT, DELETE } = Route
     let method = route.getMethod()
     let uri = route.getUri()
+    uri = this._webRoot + uri
     let handler = this._wrapCallback(route.getHandler())
     switch (method) {
       case GET:
@@ -94,8 +98,13 @@ export default class WebServer {
     throw new Error('WebServer.start() not implemented.')
   }
 
-  get port () {
-    throw new Error('WebServer.port() not implemented.')
+  getPort () {
+    return this._port
+  }
+
+  setPort (port) {
+    this._port = port
+    return this
   }
 
   get server () {

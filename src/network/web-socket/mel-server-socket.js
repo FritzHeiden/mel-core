@@ -1,19 +1,23 @@
 import Serializer from '../../utils/serializer'
 
-const GET_ARTISTS = 'get_artists',
-  GET_ARTIST = 'get_artist',
-  GET_ALBUM = 'get_album',
-  GET_TRACK = 'get_track'
+const GET_ARTISTS = 'get_artists'
+const GET_ARTIST = 'get_artist'
+const GET_ALBUM = 'get_album'
+const GET_TRACK = 'get_track'
 
 export default class MelServerSocket {
-  constructor (webSocket, identity, database) {
+  constructor (webSocket, identity, database, { webRoot } = {}) {
     this._webSocket = webSocket
     this._identity = identity
     this._sockets = []
     this._database = database
+    this._webRoot = '/'
+    if (webRoot) this._webRoot = webRoot
+    if (!this._webRoot.endsWith('/')) this._webRoot += '/'
   }
 
   initialize () {
+    this._webSocket.initialize(this._webRoot + 'socket')
     this._webSocket.on('connection', socket => {
       console.log('New Client: ', socket.id)
       socket.on(GET_ARTISTS, () => this._getArtists(socket))

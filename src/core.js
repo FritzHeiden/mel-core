@@ -59,17 +59,19 @@ class MelCore {
       this._apiHandler = new ApiHandler(
         this._database,
         this._fileSystem,
-        this._albumCoverManager
+        this._albumCoverManager,
+        { webRoot: this._configuration.web_root }
       )
-      this._webServer.addRoutes(this._apiHandler.getRoutes())
     } catch (err) {
       console.error('Could not initialize api handler: ' + err)
     }
 
-    // Web App
+    // Web Server
+    this._webServer.addRoutes(this._apiHandler.getRoutes())
     this._webServer.addStaticDirectory(melWebPath)
-    this._webServer.setWebRoot(this._configuration.web.root)
+    this._webServer.setWebRoot(this._configuration.web_root)
     this._webServer.apply()
+    this._webServer.setPort(this._configuration.port)
 
     // Network Adapter
     try {
@@ -77,7 +79,8 @@ class MelCore {
       this._melServerSocket = new MelServerSocket(
         this._webSocket,
         identity,
-        this._database
+        this._database,
+        { webRoot: this._configuration.web_root }
       )
       this._melServerSocket.initialize()
     } catch (err) {

@@ -18,9 +18,8 @@ const DEFAULT_CONFIG = {
       }
     ]
   },
-  web: {
-    root: '/'
-  }
+  web_root: '/',
+  port: 3541
 }
 
 export default class ConfigurationLoader {

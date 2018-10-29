@@ -1,9 +1,11 @@
 import Deserializer from '../../utils/deserializer'
 
 export default class MelHttpService {
-  constructor (host, port) {
+  constructor (host, port, { webRoot }) {
     this._host = host
     this._port = port
+    this._webRoot = '/'
+    if (webRoot) this._webRoot = webRoot
   }
 
   // getTracks () {
@@ -32,7 +34,7 @@ export default class MelHttpService {
 
   getArtists () {
     return new Promise((resolve, reject) =>
-      this._sendRequest('GET', '/api/artists')
+      this._sendRequest('GET', 'api/artists')
         .then(response =>
           resolve(Deserializer.deserializeArtists(JSON.parse(response.body)))
         )
@@ -60,7 +62,7 @@ export default class MelHttpService {
       options.progressHandler = progressHandler
     }
     return new Promise((resolve, reject) => {
-      this._sendRequest('GET', `/api/tracks/${trackId}/data`, options)
+      this._sendRequest('GET', `api/tracks/${trackId}/data`, options)
         .then(response => resolve(response.body))
         .catch(error => reject(error))
     })
@@ -69,7 +71,7 @@ export default class MelHttpService {
   async getTrackDataInfo (trackId) {
     const response = await this._sendRequest(
       'HEAD',
-      `/api/tracks/${trackId}/data`
+      `api/tracks/${trackId}/data`
     )
     return {
       size: parseInt(response.headers['content-length'])
@@ -79,12 +81,16 @@ export default class MelHttpService {
   async getAlbumCover (albumId) {
     const response = await this._sendRequest(
       'GET',
-      `/api/albums/${albumId}/cover`,
+      `api/albums/${albumId}/cover`,
       {
         responseType: 'arraybuffer'
       }
     )
     return response.body
+  }
+
+  getAlbumCoverUrl (albumId) {
+    return `${this._webRoot}api/albums/${albumId}/cover`
   }
 
   async _sendRequest (method, uri, { responseType, progressHandler } = {}) {
@@ -111,7 +117,12 @@ export default class MelHttpService {
         request.responseType = responseType
       }
 
-      request.open(method, `http://${this._host}:${this._port}${uri}`, true)
+      console.log(`http://${this._host}:${this._port}${this._webRoot}${uri}`)
+      request.open(
+        method,
+        `http://${this._host}:${this._port}${this._webRoot}${uri}`,
+        true
+      )
       request.send()
     })
   }
