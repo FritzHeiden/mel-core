@@ -25,7 +25,6 @@ class MelCore {
     // Load Configuration
     try {
       let configurationLoader = new ConfigurationLoader(this._fileSystem)
-      configurationLoader.setConfigPath(configPath)
       this._configuration = await configurationLoader.loadConfiguration(
         configPath
       )
@@ -69,6 +68,8 @@ class MelCore {
 
     // Web App
     this._webServer.addStaticDirectory(melWebPath)
+    this._webServer.setWebRoot(this._configuration.web.root)
+    this._webServer.apply()
 
     // Network Adapter
     try {

@@ -17,6 +17,9 @@ const DEFAULT_CONFIG = {
         delimiter: ','
       }
     ]
+  },
+  web: {
+    root: '/'
   }
 }
 
@@ -25,39 +28,18 @@ export default class ConfigurationLoader {
     this._fileSystem = fileSystem
   }
 
-  _createConfig (config) {
-    let configuration = new Configuration()
-    configuration.scanner.directories = config.scanner.directories
-    configuration.scanner.extensions = config.scanner.extensions
-    configuration.tagReader.featurePatterns = config.tag_reader.feature_patterns
-    return configuration
-  }
-
-  async loadConfiguration () {
-    let configJson = await this._fileSystem.readFile(this._configPath)
+  async loadConfiguration (configPath) {
+    let configJson = await this._fileSystem.readFile(configPath)
     if (configJson) {
       configJson = JSON.parse(configJson)
-      return this._createConfig(configJson)
+      return Object.assign(DEFAULT_CONFIG, configJson)
     } else {
-      let configuration = this._createConfig(DEFAULT_CONFIG)
-      this.saveConfiguration(configuration)
-      return configuration
+      this.saveConfiguration(configPath, DEFAULT_CONFIG)
+      return DEFAULT_CONFIG
     }
   }
 
-  saveConfiguration (configuration) {
-    return this._fileSystem.writeFile(
-      this._configPath,
-      configuration.toJsonString()
-    )
-  }
-
-  setConfigPath (configPath) {
-    this._configPath = configPath
-    return this
-  }
-
-  getConfigPath () {
-    return this._configPath
+  saveConfiguration (configPath, configuration) {
+    return this._fileSystem.writeFile(configPath, configuration.toJsonString())
   }
 }

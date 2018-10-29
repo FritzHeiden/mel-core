@@ -3,11 +3,39 @@ import Route from './route'
 import Request from './request'
 
 export default class WebServer {
+  constructor () {
+    this._webRoot = '/'
+    this._routes = []
+    this._directories = []
+  }
+
   addRoutes (routes) {
     routes.forEach(route => this.addRoute(route))
   }
 
   addRoute (route) {
+    this._routes.push(route)
+  }
+
+  setWebRoot (webRoot) {
+    this._webRoot = webRoot
+    return this
+  }
+
+  getWebRoot () {
+    return this._webRoot
+  }
+
+  addStaticDirectory (directory) {
+    this._directories.push(directory)
+  }
+
+  apply () {
+    this._routes.forEach(route => this._applyRoute(route))
+    this._directories.forEach(directory => this._static(directory))
+  }
+
+  _applyRoute (route) {
     const { GET, POST, PUT, DELETE } = Route
     let method = route.getMethod()
     let uri = route.getUri()
@@ -26,10 +54,6 @@ export default class WebServer {
         this._delete(uri, handler)
         break
     }
-  }
-
-  addStaticDirectory (directory) {
-    this._static(directory)
   }
 
   _wrapCallback (callback) {
