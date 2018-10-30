@@ -41,7 +41,7 @@ class MelCore {
     } catch (err) {
       console.error('Could not initialize directory scanner: ' + err)
     }
-    this._tagReader = new TagReader(this._configuration.tagReader)
+    this._tagReader = new TagReader(this._configuration.tag_reader)
 
     // Album Cover Manager
     this._albumCoverManager = new AlbumCoverManager(this._fileSystem)

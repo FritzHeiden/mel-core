@@ -139,7 +139,7 @@ export default class TagReader {
   _analyseFeatureArtists (string) {
     let artistNames = []
     let newString = string
-    this._config.featurePatterns.forEach(featurePattern => {
+    this._config.feature_patterns.forEach(featurePattern => {
       let artistListString
       let prefix = featurePattern.pattern.split('%a')[0]
       let suffix = featurePattern.pattern.split('%a')[1]
