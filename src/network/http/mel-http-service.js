@@ -1,6 +1,6 @@
-import Deserializer from '../../utils/deserializer'
+const Deserializer = require('../../utils/deserializer')
 
-export default class MelHttpService {
+module.exports = class MelHttpService {
   constructor (host, port, { webRoot }) {
     this._host = host
     this._port = port

@@ -48,7 +48,7 @@ class TagReaderConfig {
   }
 }
 
-export default class Configuration {
+module.exports = class Configuration {
   constructor () {
     this._scanner = new ScannerConfig()
     this._tagReader = new TagReaderConfig()

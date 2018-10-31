@@ -1,4 +1,4 @@
-export default class Album {
+module.exports = class Album {
   constructor (
     id,
     artist,

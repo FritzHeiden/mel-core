@@ -1,4 +1,4 @@
-export default class JobQueue {
+module.exports = class JobQueue {
   constructor (limit, waitingTime = 100) {
     this._jobs = []
     this._processingJobs = false

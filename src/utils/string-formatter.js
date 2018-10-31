@@ -14,4 +14,4 @@ class StringFormatter {
 }
 
 let stringFormatter = new StringFormatter()
-export default stringFormatter
+module.exports = stringFormatter

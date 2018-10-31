@@ -1,12 +1,12 @@
-import Serializer from '../../utils/serializer'
-import Route from './route'
+const Serializer = require('../../utils/serializer')
+const Route = require('./route')
 
 const ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin'
 const ACCESS_CONTROL_EXPOSE_HEADERS = 'Access-Control-Expose-Headers'
 const CONTENT_LENGTH = 'Content-Length'
 const CONTENT_TYPE = 'Content-Type'
 
-export default class ApiHandler {
+module.exports = class ApiHandler {
   constructor (database, fileSystem, albumCoverManager, { webRoot } = {}) {
     this._db = database
     this._fileSystem = fileSystem

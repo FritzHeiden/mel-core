@@ -65,4 +65,4 @@ serializer.serializeFile = file => {
   return { path, type, lastModified, trackId }
 }
 
-export default serializer
+module.exports = serializer

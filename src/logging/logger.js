@@ -1,4 +1,4 @@
-export default class Logger {
+module.exports = class Logger {
   constructor (className) {
     this._className = className
   }

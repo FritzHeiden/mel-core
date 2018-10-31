@@ -1,24 +1,24 @@
-import DirectoryScanner from './files/directory-scanner'
-import WebServer from './network/http/web-server'
-import ConfigurationLoader from './config/configuration-loader'
-import TagReader from './media/tag-reader'
-import Database from './database/database'
-import ApiHandler from './network/http/api-handler'
-import File from './data/files/file'
-import Track from './data/track'
-import Album from './data/album'
-import Artist from './data/artist'
-import MelServerSocket from './network/web-socket/mel-server-socket'
-import MelClientSocket from './network/web-socket/mel-client-socket'
-import MelHttpService from './network/http/mel-http-service'
-import WebSocket from './network/web-socket/web-socket'
-import FileSystem from './files/file-system'
-import JobQueue from './utils/job-qeue'
-import Response from './network/http/response'
-import Request from './network/http/request'
-import AlbumCoverManager from './utils/album-cover-manager'
-import TrackDownloadService from './services/track-download-service'
-import StringFormatter from './utils/string-formatter'
+const DirectoryScanner = require('./files/directory-scanner')
+const WebServer = require('./network/http/web-server')
+const ConfigurationLoader = require('./config/configuration-loader')
+const TagReader = require('./media/tag-reader')
+const Database = require('./database/database')
+const ApiHandler = require('./network/http/api-handler')
+const File = require('./data/files/file')
+const Track = require('./data/track')
+const Album = require('./data/album')
+const Artist = require('./data/artist')
+const MelServerSocket = require('./network/web-socket/mel-server-socket')
+const MelClientSocket = require('./network/web-socket/mel-client-socket')
+const MelHttpService = require('./network/http/mel-http-service')
+const WebSocket = require('./network/web-socket/web-socket')
+const FileSystem = require('./files/file-system')
+const JobQueue = require('./utils/job-qeue')
+const Response = require('./network/http/response')
+const Request = require('./network/http/request')
+const AlbumCoverManager = require('./utils/album-cover-manager')
+const TrackDownloadService = require('./services/track-download-service')
+const StringFormatter = require('./utils/string-formatter')
 
 class MelCore {
   async initialize ({ configPath, melWebPath }) {
@@ -162,7 +162,7 @@ class MelCore {
   }
 }
 
-export {
+module.exports = {
   Artist,
   Album,
   Track,

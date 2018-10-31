@@ -1,9 +1,9 @@
-import File from '../data/files/file'
-import JobQueue from '../utils/job-qeue'
+const File = require('../data/files/file')
+const JobQueue = require('../utils/job-qeue')
 
 const MAX_READING_JOBS = 1
 
-export default class DirectoryScanner {
+module.exports = class DirectoryScanner {
   constructor (fileSystem, configuration) {
     this._fileSystem = fileSystem
     this._config = configuration
@@ -44,12 +44,10 @@ export default class DirectoryScanner {
   }
 
   _determineFileType (path) {
-    switch (
-      path
-        .split('.')
-        .pop()
-        .toLowerCase()
-    ) {
+    switch (path
+      .split('.')
+      .pop()
+      .toLowerCase()) {
       case 'mp3':
         return File.MP3
       case 'flac':

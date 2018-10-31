@@ -1,8 +1,8 @@
-import File from '../data/files/file'
-import UTF8Transcoder from '../utils/utf8-transcoder'
-import * as ID3Parser from 'id3-parser'
+const File = require('../data/files/file')
+const UTF8Transcoder = require('../utils/utf8-transcoder')
+const ID3Parser = require('id3-parser')
 
-export default class Id3Tagger {
+module.exports = class Id3Tagger {
   async readTags (file) {
     if (!(file instanceof File)) {
       throw new Error('First parameter must be of type File!')

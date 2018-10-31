@@ -1,4 +1,4 @@
-export default class AlbumCover {
+module.exports = class AlbumCover {
   constructor (buffer, mime, albumId) {
     this._buffer = buffer
     this._mime = mime

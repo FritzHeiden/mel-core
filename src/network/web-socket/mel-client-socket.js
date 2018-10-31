@@ -1,6 +1,6 @@
-import Deserializer from '../../utils/deserializer'
+const Deserializer = require('../../utils/deserializer')
 
-export default class MelClientSocket {
+module.exports = class MelClientSocket {
   constructor (webSocket) {
     this._webSocket = webSocket
   }

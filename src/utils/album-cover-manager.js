@@ -1,8 +1,8 @@
-import AlbumCover from '../data/album-cover'
+const AlbumCover = require('../data/album-cover')
 
 const RELATIVE_ALBUM_COVERS_PATH = '/data/covers'
 
-export default class AlbumCoverManager {
+module.exports = class AlbumCoverManager {
   constructor (fileSystem) {
     this._fileSystem = fileSystem
     this._albumCoversPath =
@@ -11,7 +11,7 @@ export default class AlbumCoverManager {
   }
 
   async initialize () {
-    if (!(await this._fileSystem.stats(this._albumCoversPath))) {
+    if (!await this._fileSystem.stats(this._albumCoversPath)) {
       await this._fileSystem.makeDirectory(this._albumCoversPath)
     }
     await this.loadAlbumCovers()

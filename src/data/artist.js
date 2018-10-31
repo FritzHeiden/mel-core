@@ -1,4 +1,4 @@
-export default class Artist {
+module.exports = class Artist {
   constructor (id, name, albums = [], featureAlbums = []) {
     this._id = id
     this._name = name

@@ -1,7 +1,7 @@
-import File from '../data/files/file'
-import Track from '../data/track'
-import Album from '../data/album'
-import Artist from '../data/artist'
+const File = require('../data/files/file')
+const Track = require('../data/track')
+const Album = require('../data/album')
+const Artist = require('../data/artist')
 
 let deserializer = {}
 
@@ -92,4 +92,4 @@ deserializer.deserializeFiles = filesJson => {
   return filesJson.map(fileJson => deserializer.deserializeFile(fileJson))
 }
 
-export default deserializer
+module.exports = deserializer

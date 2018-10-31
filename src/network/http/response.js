@@ -1,6 +1,6 @@
 const OK = 200
 
-export default class Response {
+module.exports = class Response {
   constructor () {
     this._status = OK
   }

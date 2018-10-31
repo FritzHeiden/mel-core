@@ -1,11 +1,11 @@
-import Serializer from '../../utils/serializer'
+const Serializer = require('../../utils/serializer')
 
 const GET_ARTISTS = 'get_artists'
 const GET_ARTIST = 'get_artist'
 const GET_ALBUM = 'get_album'
 const GET_TRACK = 'get_track'
 
-export default class MelServerSocket {
+module.exports = class MelServerSocket {
   constructor (webSocket, identity, database, { webRoot } = {}) {
     this._webSocket = webSocket
     this._identity = identity

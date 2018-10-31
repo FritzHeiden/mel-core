@@ -1,5 +1,5 @@
-import JSZip from 'jszip'
-import EventEmitter from '../utils/event-emitter'
+const JSZip = require('jszip')
+const EventEmitter = require('../utils/event-emitter')
 
 const DOWNLOAD_LIST_CHANGE = 'download_list_change'
 const TOTAL_SIZE_CHANGE = 'total_size_change'
@@ -236,4 +236,4 @@ TrackDownloadService.DOWNLOADING = DOWNLOADING
 TrackDownloadService.ZIPPING = ZIPPING
 TrackDownloadService.DONE = DONE
 
-export default TrackDownloadService
+module.exports = TrackDownloadService

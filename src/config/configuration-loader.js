@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
   port: 3541
 }
 
-export default class ConfigurationLoader {
+module.exports = class ConfigurationLoader {
   constructor (fileSystem) {
     this._fileSystem = fileSystem
   }

@@ -55,4 +55,4 @@ Utf8Transcoder.decodeUtf8 = (uint8array, removeZeroTermination) => {
   return result
 }
 
-export default Utf8Transcoder
+module.exports = Utf8Transcoder

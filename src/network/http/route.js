@@ -40,4 +40,4 @@ Route.POST = POST
 Route.PUT = PUT
 Route.DELETE = DELETE
 
-export default Route
+module.exports = Route

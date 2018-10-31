@@ -1,12 +1,12 @@
-import Serializer from '../utils/serializer'
-import Deserializer from '../utils/deserializer'
-import JobQueue from '../utils/job-qeue'
+const Serializer = require('../utils/serializer')
+const Deserializer = require('../utils/deserializer')
+const JobQueue = require('../utils/job-qeue')
 
 const IDENTITY = 'id'
 const MAX_READING_JOBS = 5
 const MAX_WRITING_JOBS = 1
 
-export default class Database {
+module.exports = class Database {
   constructor () {
     this._readingQueue = new JobQueue(MAX_READING_JOBS)
     this._queueReading = this._readingQueue.queueJob.bind(this._readingQueue)

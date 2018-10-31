@@ -1,8 +1,8 @@
-import Response from './response'
-import Route from './route'
-import Request from './request'
+const Response = require('./response')
+const Route = require('./route')
+const Request = require('./request')
 
-export default class WebServer {
+module.exports = class WebServer {
   constructor () {
     this._webRoot = '/'
     this._routes = []

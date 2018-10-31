@@ -1,6 +1,6 @@
-import Artist from '../data/artist'
+const Artist = require('../data/artist')
 
-export let IdGenerator = {
+const IdGenerator = {
   getArtistId: artist => {
     // Check if all necessary information are provided
     if (artist.name === undefined || artist.name === '') {
@@ -87,3 +87,5 @@ export let IdGenerator = {
     return title + number + albumId
   }
 }
+
+module.exports = IdGenerator

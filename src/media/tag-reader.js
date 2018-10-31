@@ -1,10 +1,10 @@
-import Id3Tagger from '../media/id3-tagger'
-import { IdGenerator } from '../database/id-generator'
-import Artist from '../data/artist'
-import Album from '../data/album'
-import Track from '../data/track'
+const Id3Tagger = require('../media/id3-tagger')
+const IdGenerator = require('../database/id-generator')
+const Artist = require('../data/artist')
+const Album = require('../data/album')
+const Track = require('../data/track')
 
-export default class TagReader {
+module.exports = class TagReader {
   constructor (configuration) {
     this._id3Tagger = new Id3Tagger()
     this._config = configuration

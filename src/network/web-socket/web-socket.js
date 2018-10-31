@@ -1,4 +1,4 @@
-export default class WebSocket {
+module.exports = class WebSocket {
   constructor () {
     this._hasServer = false
   }

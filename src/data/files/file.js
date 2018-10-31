@@ -1,7 +1,7 @@
 const MP3 = 1
 const FLAC = 2
 
-export default class File {
+module.exports = class File {
   constructor (path, type, buffer = null, lastModified = 0, track) {
     this._path = path
     this._type = type

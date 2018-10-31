@@ -1,4 +1,4 @@
-export default class FileSystem {
+module.exports = class FileSystem {
   get APPLICATION_DIRECTORY () {
     throw new Error('FileSystem.APPLICATION_DIRECTORY() not implemented!')
   }
