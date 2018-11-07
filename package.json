@@ -14,6 +14,7 @@
     "standard": "^10.0.3"
   },
   "dependencies": {
+    "gmid-generator": "git+ssh://git@rmdlkomrer9jxjuf.myfritz.net:422/fritz/gmid-generator.git",
     "id3-parser": "^2.0.0",
     "jszip": "^3.1.5"
   }

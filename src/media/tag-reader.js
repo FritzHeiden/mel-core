@@ -1,5 +1,6 @@
+const GmidGenerator = require('gmid-generator')
+
 const Id3Tagger = require('../media/id3-tagger')
-const IdGenerator = require('../database/id-generator')
 const Artist = require('../data/artist')
 const Album = require('../data/album')
 const Track = require('../data/track')
@@ -24,12 +25,12 @@ module.exports = class TagReader {
     })
 
     trackArtists.forEach(trackArtist => {
-      trackArtist.id = IdGenerator.getArtistId(trackArtist)
+      trackArtist.id = GmidGenerator.generateArtistGmid(trackArtist.name)
     })
 
     let albumArtistName = tags.albumArtistName
     let albumArtist = new Artist(undefined, albumArtistName, [], [])
-    albumArtist.id = IdGenerator.getArtistId(albumArtist)
+    albumArtist.id = GmidGenerator.generateArtistGmid(albumArtist.name)
 
     trackArtists.forEach(artist => {
       if (artist.id === albumArtist.id) {
@@ -48,7 +49,8 @@ module.exports = class TagReader {
       [],
       tags.albumCover
     )
-    album.id = IdGenerator.getAlbumId(album, album.artist)
+    album.id = GmidGenerator.generateAlbumGmid(album.title, album.artist.name)
+    console.log(album.id)
 
     let trackTitle = tags.trackTitle
     let trackNumber = tags.trackNumber
@@ -61,7 +63,12 @@ module.exports = class TagReader {
       trackNumber,
       discNumber
     )
-    track.id = IdGenerator.getTrackId(track)
+    track.id = GmidGenerator.generateTrackGmid(
+      track.title,
+      track.number,
+      track.album.title,
+      track.album.artist.name
+    )
 
     album.addTrack(track)
     trackArtists.forEach(artist => {
