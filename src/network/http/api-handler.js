@@ -46,7 +46,7 @@ module.exports = class ApiHandler {
       .readFilesByTrackId(trackId)
       .then(files => {
         const file = files[0]
-        this._fileSystem.readFileBuffer(file.path).then(data => {
+        this._fileSystem.readFileBuffer(file.getPath()).then(data => {
           response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, '*')
           response.setHeader(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_LENGTH)
           response.sendBuffer(data)

@@ -5,12 +5,12 @@ serializer.serializeTrack = track => {
     return null
   }
 
-  let id = track.id
-  let title = track.title
-  let artists = track.artists.map(artist => artist.id)
-  let album = track.album.id
-  let number = track.number
-  let discNumber = track.discNumber
+  let id = track.getId()
+  let title = track.getTitle()
+  let artists = track.getArtists().map(artist => artist.getId())
+  let album = track.getAlbum().getId()
+  let number = track.getNumber()
+  let discNumber = track.getDiscNumber()
   return { id, title, number, album, discNumber, artists }
 }
 
@@ -19,12 +19,12 @@ serializer.serializeAlbum = album => {
     return null
   }
 
-  let id = album.id
-  let artist = album.artist.id
-  let title = album.title
-  let year = album.year
-  let featureArtists = album.featureArtists.map(artist => artist.id)
-  let tracks = album.tracks.map(track => track.id)
+  let id = album.getId()
+  let artist = album.getArtist().getId()
+  let title = album.getTitle()
+  let year = album.getYear()
+  let featureArtists = album.getFeatureArtists().map(artist => artist.getId())
+  let tracks = album.getTracks().map(track => track.getId())
   return { id, artist, title, year, featureArtists, tracks }
 }
 
@@ -33,11 +33,13 @@ serializer.serializeArtist = artist => {
     return null
   }
   try {
-    let id = artist.id
-    let name = artist.name
-    let albums = artist.albums ? artist.albums.map(album => album.id) : []
-    let featureAlbums = artist.featureAlbums
-      ? artist.featureAlbums.map(album => album.id)
+    let id = artist.getId()
+    let name = artist.getName()
+    let albums = artist.getAlbums()
+      ? artist.getAlbums().map(album => album.getId())
+      : []
+    let featureAlbums = artist.getFeatureAlbums()
+      ? artist.getFeatureAlbums().map(album => album.getId())
       : []
     return { id, name, albums, featureAlbums }
   } catch (error) {
@@ -58,10 +60,10 @@ serializer.serializeFile = file => {
     return null
   }
 
-  let path = file.path
-  let type = file.type
-  let lastModified = file.lastModified
-  let trackId = file.track.id
+  let path = file.getPath()
+  let type = file.getType()
+  let lastModified = file.getLastModified()
+  let trackId = file.getTrack().getId()
   return { path, type, lastModified, trackId }
 }
 

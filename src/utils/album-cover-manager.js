@@ -30,13 +30,13 @@ module.exports = class AlbumCoverManager {
     const { data, mime } = album.getAlbumCover()
     const extension = this._mimeToExtension(mime)
 
-    const filePath = this._albumCoversPath + '/' + album.id + extension
+    const filePath = this._albumCoversPath + '/' + album.getId() + extension
 
     if (await this._fileSystem.stats(filePath)) {
       return
     }
 
-    this._albumCovers[album.id] = extension
+    this._albumCovers[album.getId()] = extension
 
     return this._fileSystem.writeBinaryFile(filePath, data)
   }

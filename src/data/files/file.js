@@ -1,7 +1,7 @@
 const MP3 = 1
 const FLAC = 2
 
-module.exports = class File {
+class File {
   constructor (path, type, buffer = null, lastModified = 0, track) {
     this._path = path
     this._type = type
@@ -14,51 +14,53 @@ module.exports = class File {
     delete this._buffer
   }
 
-  get path () {
+  getPath () {
     return this._path
   }
 
-  set path (value) {
+  setPath (value) {
     this._path = value
+    return this
   }
 
-  get type () {
+  getType () {
     return this._type
   }
 
-  set type (value) {
+  setType (value) {
     this._type = value
+    return this
   }
 
-  get buffer () {
+  getBuffer () {
     return this._buffer
   }
 
-  set buffer (value) {
+  setBuffer (value) {
     this._buffer = value
+    return this
   }
 
-  get lastModified () {
+  getLastModified () {
     return this._lastModified
   }
 
-  set lastModified (value) {
+  setLastModified (value) {
     this._lastModified = value
+    return this
   }
 
-  get track () {
+  getTrack () {
     return this._track
   }
 
-  set track (value) {
+  setTrack (value) {
     this._track = value
-  }
-
-  static get MP3 () {
-    return MP3
-  }
-
-  static get FLAC () {
-    return FLAC
+    return this
   }
 }
+
+File.MP3 = MP3
+File.FLAC = FLAC
+
+module.exports = File

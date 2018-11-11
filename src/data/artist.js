@@ -7,12 +7,12 @@ module.exports = class Artist {
   }
 
   addAlbum (newAlbum) {
-    newAlbum.artist = this
-    let album = this._albums.find(album => album.id === newAlbum.id)
+    newAlbum.setArtist(this)
+    let album = this._albums.find(album => album.getId() === newAlbum.getId())
     if (!album) {
       this._albums.push(newAlbum)
     } else {
-      album.addTracks(newAlbum.tracks)
+      album.addTracks(newAlbum.getTracks())
     }
   }
 
@@ -22,7 +22,9 @@ module.exports = class Artist {
 
   addFeatureAlbum (newAlbum) {
     if (
-      this._featureAlbums.findIndex(album => album.id === newAlbum.id) === -1
+      this._featureAlbums.findIndex(
+        album => album.getId() === newAlbum.getId()
+      ) === -1
     ) {
       newAlbum.addFeatureArtist(this)
       this._featureAlbums.push(newAlbum)
@@ -36,42 +38,46 @@ module.exports = class Artist {
   toString () {
     return (
       `Artist {` +
-      `name: ${this.name}, ` +
-      `albums: ${this.albums.map(album => album.title)}, ` +
-      `featureAlbums: ${this.featureAlbums.map(album => album.title)}, ` +
-      `id: ${this.id}}`
+      `name: ${this._name}, ` +
+      `albums: ${this._albums.map(album => album.getTitle())}, ` +
+      `featureAlbums: ${this._featureAlbums.map(album => album.getTitle())}, ` +
+      `id: ${this._id}}`
     )
   }
 
-  get name () {
+  getName () {
     return this._name
   }
 
-  set name (value) {
+  setName (value) {
     this._name = value
+    return this
   }
 
-  get albums () {
+  getAlbums () {
     return this._albums
   }
 
-  set albums (value) {
+  setAlbums (value) {
     this._albums = value
+    return this
   }
 
-  get id () {
+  getId () {
     return this._id
   }
 
-  set id (value) {
+  setId (value) {
     this._id = value
+    return this
   }
 
-  get featureAlbums () {
+  getFeatureAlbums () {
     return this._featureAlbums
   }
 
-  set featureAlbums (value) {
+  setFeatureAlbums (value) {
     this._featureAlbums = value
+    return this
   }
 }

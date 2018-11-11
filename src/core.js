@@ -97,31 +97,43 @@ class MelCore {
     await this._directoryScanner.scanDirs(newFile =>
       refreshQuery.queueJob(async () => {
         try {
-          let file = await this._database.readFile(newFile.path)
-          if (file && newFile.lastModified <= file.lastModified) {
+          let file = await this._database.readFile(newFile.getPath())
+          if (file && newFile.getLastModified() <= file.getLastModified()) {
             // If file exists in DB -> skip
-            console.log(`Skipping existing file ${file.path} ...`)
+            console.log(`Skipping existing file ${file.getPath()} ...`)
             return null
           }
 
-          newFile.buffer = await this._fileSystem.readFileBuffer(newFile.path)
+          newFile.setBuffer(
+            await this._fileSystem.readFileBuffer(newFile.getPath())
+          )
 
           // If file does not exist in DB read its ID3 tags
-          newFile.track = await this._tagReader.readTags(newFile)
+          newFile.setTrack(await this._tagReader.readTags(newFile))
 
-          await this._albumCoverManager.saveAlbumCover(newFile.track.album)
-          newFile.track.album.deleteAlbumCoverBuffer()
+          await this._albumCoverManager.saveAlbumCover(
+            newFile.getTrack().getAlbum()
+          )
+          newFile
+            .getTrack()
+            .getAlbum()
+            .deleteAlbumCoverBuffer()
 
           newFile.deleteBuffer()
           // Persist file in DB
           await this._database.persistFile(newFile)
-          console.log(`Added new file ${newFile.path}`)
+          console.log(`Added new file ${newFile.getPath()}`)
 
-          await this._database.persistTrack(newFile.track)
-          await this._database.persistAlbum(newFile.track.album)
-          await this._database.persistArtist(newFile.track.album.artist)
+          await this._database.persistTrack(newFile.getTrack())
+          await this._database.persistAlbum(newFile.getTrack().getAlbum())
+          await this._database.persistArtist(
+            newFile
+              .getTrack()
+              .getAlbum()
+              .getArtist()
+          )
 
-          for (let artist of newFile.track.artists) {
+          for (let artist of newFile.getTrack().getArtists()) {
             await this._database.persistArtist(artist)
           }
         } catch (err) {

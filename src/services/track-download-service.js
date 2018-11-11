@@ -80,16 +80,19 @@ class TrackDownloadService {
   }
 
   addArtist (artist) {
-    artist.albums.forEach(album => this.addAlbum(album))
+    artist.getAlbums().forEach(album => this.addAlbum(album))
   }
 
   addAlbum (album) {
-    album.tracks.forEach(track => this.addTrack(track))
+    album.getTracks().forEach(track => this.addTrack(track))
   }
 
   addTrack (track) {
-    if (!this._queueContainsTrack(track.id)) {
-      let downloadItem = new DownloadItem(track, this._fetchTrackSize(track.id))
+    if (!this._queueContainsTrack(track.getId())) {
+      let downloadItem = new DownloadItem(
+        track,
+        this._fetchTrackSize(track.getId())
+      )
       downloadItem.addOnSizeChangeListener(this._increaseTotalSize.bind(this))
       this._queue.push(downloadItem)
       this._eventEmitter.invokeAll(DOWNLOAD_LIST_CHANGE, this._queue)
@@ -107,18 +110,22 @@ class TrackDownloadService {
 
   containsAlbum (needleAlbum) {
     let artist = this._artists.find(
-      artist => artist.id === needleAlbum.artist.id
+      artist => artist.getId() === needleAlbum.getArtist().getId()
     )
     if (!artist) {
       return false
     }
-    let album = artist.albums.find(album => album.id === needleAlbum.id)
+    let album = artist
+      .getAlbums()
+      .find(album => album.getId() === needleAlbum.getId())
     if (!album) {
       return false
     }
 
-    for (let needleTrack of needleAlbum.tracks) {
-      if (!album.tracks.find(track => track.id === needleTrack.id)) {
+    for (let needleTrack of needleAlbum.getTracks()) {
+      if (
+        !album.getTracks().find(track => track.getId() === needleTrack.getId())
+      ) {
         return false
       }
     }
@@ -144,22 +151,23 @@ class TrackDownloadService {
 
     for (let item of this._queue) {
       let track = item.getTrack()
-      let album = track.album
-      let artist = album.artist
-      let artistFolder = zip.folder(artist.name)
-      let folderName = album.title
-      if (typeof album.year === 'number') {
-        folderName = `${album.year} - ${album.title}`
+      let album = track.getAlbum()
+      let artist = album.getArtist()
+      let artistFolder = zip.folder(artist.getName())
+      let folderName = album.getTitle()
+      if (typeof album.getYear() === 'number') {
+        folderName = `${album.getYear()} - ${album.getTitle()}`
       }
       let albumFolder = artistFolder.folder(folderName)
 
       this._setCurrentTrack(track)
-      const buffer = await this._melHttpService.downloadTrack(track.id)
+      const buffer = await this._melHttpService.downloadTrack(track.getId())
       this._setCurrentTrack(null)
 
-      let fileName = track.title + '.mp3'
-      if (typeof track.number === 'number') {
-        fileName = `${track.number}`.padStart(2, '0') + ` - ${track.title}.mp3`
+      let fileName = track.getTitle() + '.mp3'
+      if (typeof track.getNumber() === 'number') {
+        fileName =
+          `${track.getNumber()}`.padStart(2, '0') + ` - ${track.getTitle()}.mp3`
       }
       albumFolder.file(fileName, buffer)
     }
@@ -197,14 +205,26 @@ class TrackDownloadService {
 
     this._queue.forEach(item => {
       let track = item.getTrack()
-      if (tracks.indexOf(track.id) === -1) {
-        tracks.push(track.id)
+      if (tracks.indexOf(track.getId()) === -1) {
+        tracks.push(track.getId())
       }
-      if (albums.indexOf(track.album.id) === -1) {
-        albums.push(track.album.id)
+      if (albums.indexOf(track.getAlbum().getId()) === -1) {
+        albums.push(track.getAlbum().getId())
       }
-      if (artists.indexOf(track.album.artist.id) === -1) {
-        artists.push(track.album.artist.id)
+      if (
+        artists.indexOf(
+          track
+            .getAlbum()
+            .getArtist()
+            .getId()
+        ) === -1
+      ) {
+        artists.push(
+          track
+            .getAlbum()
+            .getArtist()
+            .getId()
+        )
       }
     })
     return {

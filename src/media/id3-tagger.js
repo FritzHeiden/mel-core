@@ -17,7 +17,7 @@ module.exports = class Id3Tagger {
       'set-part': discNumber,
       album: albumTitle,
       image: albumCover
-    } = ID3Parser.parse(new Uint8Array(file.buffer))
+    } = ID3Parser.parse(new Uint8Array(file.getBuffer()))
 
     return {
       trackTitle,
@@ -30,7 +30,7 @@ module.exports = class Id3Tagger {
       albumCover
     }
 
-    // let dataView = new DataView(file.buffer)
+    // let dataView = new DataView(file.getBuffer())
     // return this._readID3v2(dataView)
   }
 

@@ -85,7 +85,7 @@ module.exports = class Database {
 
   async _persistTrack (track) {
     try {
-      if (await this.readTrack(track.id)) {
+      if (await this.readTrack(track.getId())) {
         return this.updateTrack(track)
       } else {
         return this.createTrack(track)
@@ -130,10 +130,10 @@ module.exports = class Database {
 
   async _persistAlbum (album) {
     try {
-      let readAlbum = await this.readAlbum(album.id)
+      let readAlbum = await this.readAlbum(album.getId())
       if (readAlbum) {
-        readAlbum.addTracks(album.tracks)
-        readAlbum.addFeatureArtists(album.featureArtists)
+        readAlbum.addTracks(album.getTracks())
+        readAlbum.addFeatureArtists(album.getFeatureArtists())
         return this.updateAlbum(readAlbum)
       } else {
         return this.createAlbum(album)
@@ -187,10 +187,10 @@ module.exports = class Database {
 
   async _persistArtist (artist) {
     try {
-      let readArtist = await this.readArtist(artist.id)
+      let readArtist = await this.readArtist(artist.getId())
       if (readArtist) {
-        readArtist.addAlbums(artist.albums)
-        readArtist.addFeatureAlbums(artist.featureAlbums)
+        readArtist.addAlbums(artist.getAlbums())
+        readArtist.addFeatureAlbums(artist.getFeatureAlbums())
         await this.updateArtist(readArtist)
       } else {
         await this.createArtist(artist)

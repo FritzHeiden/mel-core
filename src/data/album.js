@@ -19,8 +19,10 @@ module.exports = class Album {
   }
 
   addTrack (newTrack) {
-    newTrack.album = this
-    if (this._tracks.findIndex(track => track.id === newTrack.id) === -1) {
+    newTrack.setAlbum(this)
+    if (
+      this._tracks.findIndex(track => track.getId() === newTrack.getId()) === -1
+    ) {
       this._tracks.push(newTrack)
     }
   }
@@ -31,8 +33,9 @@ module.exports = class Album {
 
   addFeatureArtist (newArtist) {
     if (
-      this._featureArtists.findIndex(artist => artist.id === newArtist.id) ===
-      -1
+      this._featureArtists.findIndex(
+        artist => artist.getId() === newArtist.getId()
+      ) === -1
     ) {
       this._featureArtists.push(newArtist)
       newArtist.addFeatureAlbum(this)
@@ -46,12 +49,14 @@ module.exports = class Album {
   toString () {
     return (
       `Album {` +
-      `title: ${this.title}, ` +
-      `year: ${this.year}, ` +
-      `trackCount: ${this.tracks.length}, ` +
-      `artist: ${this.artist.name}, ` +
-      `featureArtists: ${this.featureArtists.map(artist => artist.name)}, ` +
-      `id: ${this.id}}`
+      `title: ${this._title}, ` +
+      `year: ${this._year}, ` +
+      `trackCount: ${this._tracks.length}, ` +
+      `artist: ${this._artist.getName()}, ` +
+      `featureArtists: ${this._featureArtists.map(artist =>
+        artist.getName()
+      )}, ` +
+      `id: ${this._id}}`
     )
   }
 
@@ -67,51 +72,57 @@ module.exports = class Album {
     this._albumCover = cover
   }
 
-  set artist (artist) {
+  setArtist (artist) {
     this._artist = artist
+    return this
   }
 
-  get artist () {
+  getArtist () {
     return this._artist
   }
 
-  get title () {
+  getTitle () {
     return this._title
   }
 
-  set title (value) {
+  setTitle (value) {
     this._title = value
+    return this
   }
 
-  get year () {
+  getYear () {
     return this._year
   }
 
-  set year (value) {
+  setYear (value) {
     this._year = value
+    return this
   }
 
-  get tracks () {
+  getTracks () {
     return this._tracks
   }
 
-  set tracks (value) {
+  setTracks (value) {
     this._tracks = value
+    return this
   }
 
-  get id () {
+  getId () {
     return this._id
   }
 
-  set id (value) {
+  setId (value) {
     this._id = value
+    return this
   }
 
-  get featureArtists () {
+  getFeatureArtists () {
     return this._featureArtists
   }
 
-  set featureArtists (value) {
+  setFeatureArtists (value) {
     this._featureArtists = value
+    return this
   }
 }

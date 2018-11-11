@@ -25,15 +25,15 @@ module.exports = class TagReader {
     })
 
     trackArtists.forEach(trackArtist => {
-      trackArtist.id = GmidGenerator.generateArtistGmid(trackArtist.name)
+      trackArtist.setId(GmidGenerator.generateArtistGmid(trackArtist.getName()))
     })
 
     let albumArtistName = tags.albumArtistName
     let albumArtist = new Artist(undefined, albumArtistName, [], [])
-    albumArtist.id = GmidGenerator.generateArtistGmid(albumArtist.name)
+    albumArtist.setId(GmidGenerator.generateArtistGmid(albumArtist.getName()))
 
     trackArtists.forEach(artist => {
-      if (artist.id === albumArtist.id) {
+      if (artist.getId() === albumArtist.getId()) {
         albumArtist = artist
       }
     })
@@ -49,8 +49,12 @@ module.exports = class TagReader {
       [],
       tags.albumCover
     )
-    album.id = GmidGenerator.generateAlbumGmid(album.title, album.artist.name)
-    console.log(album.id)
+    album.setId(
+      GmidGenerator.generateAlbumGmid(
+        album.getTitle(),
+        album.getArtist().getName()
+      )
+    )
 
     let trackTitle = tags.trackTitle
     let trackNumber = tags.trackNumber
@@ -63,16 +67,21 @@ module.exports = class TagReader {
       trackNumber,
       discNumber
     )
-    track.id = GmidGenerator.generateTrackGmid(
-      track.title,
-      track.number,
-      track.album.title,
-      track.album.artist.name
+    track.setId(
+      GmidGenerator.generateTrackGmid(
+        track.getTitle(),
+        track.getNumber(),
+        track.getAlbum().getTitle(),
+        track
+          .getAlbum()
+          .getArtist()
+          .getName()
+      )
     )
 
     album.addTrack(track)
     trackArtists.forEach(artist => {
-      if (albumArtist.id !== artist.id) {
+      if (albumArtist.getId() !== artist.getId()) {
         album.addFeatureArtist(artist)
         artist.addFeatureAlbum(album)
       }

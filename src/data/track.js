@@ -16,7 +16,11 @@ module.exports = class Track {
   }
 
   addArtist (newArtist) {
-    if (this._artists.findIndex(artist => artist.id === newArtist.id) === -1) {
+    if (
+      this._artists.findIndex(
+        artist => artist.getId() === newArtist.getId()
+      ) === -1
+    ) {
       this._artists.push(newArtist)
     }
   }
@@ -24,60 +28,66 @@ module.exports = class Track {
   toString () {
     return (
       `Track {` +
-      `title: ${this.title}, ` +
-      `artists: ${this.artists.map(artist => artist.name)}, ` +
-      `album: ${this.album.name}, ` +
-      `number: ${this.number}, ` +
-      `discNumber: ${this.discNumber}, ` +
-      `id: ${this.id}}`
+      `title: ${this._title}, ` +
+      `artists: ${this._artists.map(artist => artist.getName())}, ` +
+      `album: ${this._album.name}, ` +
+      `number: ${this._number}, ` +
+      `discNumber: ${this._discNumber}, ` +
+      `id: ${this._id}}`
     )
   }
 
-  get title () {
+  getTitle () {
     return this._title
   }
 
-  set title (value) {
+  setTitle (value) {
     this._title = value
+    return this
   }
 
-  get artists () {
+  getArtists () {
     return this._artists
   }
 
-  set artist (value) {
+  setArtists (value) {
     this._artists = value
+    return this
   }
 
-  get album () {
+  getAlbum () {
     return this._album
   }
 
-  set album (value) {
+  setAlbum (value) {
     this._album = value
+    return this
   }
 
-  get number () {
+  getNumber () {
     return this._number
   }
 
-  set number (value) {
+  setNumber (value) {
     this._number = value
+    return this
   }
 
-  get discNumber () {
+  getDiscNumber () {
     return this._discNumber
   }
 
-  set discNumber (value) {
+  setDiscNumber (value) {
     this._discNumber = value
+    return this
   }
 
-  get id () {
+  getId () {
     return this._id
   }
 
-  set id (value) {
+  setId (value) {
     this._id = value
+    return this
   }
 }
