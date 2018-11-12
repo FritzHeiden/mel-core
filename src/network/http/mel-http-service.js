@@ -1,11 +1,13 @@
 const Deserializer = require('../../utils/deserializer')
 
 module.exports = class MelHttpService {
-  constructor (host, port, { webRoot }) {
+  constructor (host, port, { webRoot, protocol }) {
     this._host = host
     this._port = port
     this._webRoot = '/'
     if (webRoot) this._webRoot = webRoot
+    this._protocol = 'http'
+    if (protocol) this._protocol = protocol
   }
 
   // getTracks () {
@@ -117,10 +119,10 @@ module.exports = class MelHttpService {
         request.responseType = responseType
       }
 
-      console.log(`http://${this._host}:${this._port}${this._webRoot}${uri}`)
+      console.log(`${this._protocol}://${this._host}:${this._port}${this._webRoot}${uri}`)
       request.open(
         method,
-        `http://${this._host}:${this._port}${this._webRoot}${uri}`,
+        `${this._protocol}://${this._host}:${this._port}${this._webRoot}${uri}`,
         true
       )
       request.send()
