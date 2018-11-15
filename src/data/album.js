@@ -46,6 +46,11 @@ module.exports = class Album {
     artists.forEach(artist => this.addFeatureArtist(artist))
   }
 
+  deleteTrack (trackId) {
+    const index = this._tracks.findIndex(track => track.getId() === trackId)
+    this._tracks.splice(index, 1)
+  }
+
   toString () {
     return (
       `Album {` +
