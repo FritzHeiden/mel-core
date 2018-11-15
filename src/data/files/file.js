@@ -1,5 +1,5 @@
-const MP3 = 1
-const FLAC = 2
+const MP3 = 'mp3'
+const FLAC = 'flac'
 
 class File {
   constructor (path, type, buffer = null, lastModified = 0, track) {

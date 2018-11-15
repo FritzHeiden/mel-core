@@ -9,6 +9,7 @@ module.exports = class DirectoryScanner {
     this._config = configuration
     this._readingQueue = new JobQueue(MAX_READING_JOBS)
     this._queueReading = this._readingQueue.queueJob.bind(this._readingQueue)
+    this._fileExtensions = this._config.extensions.map(extension => this._determineFileType(extension))
   }
 
   async scanDirs (callback) {
@@ -37,6 +38,7 @@ module.exports = class DirectoryScanner {
           return this.scanDir(path, callback)
         } else {
           let fileType = this._determineFileType(path)
+          if (this._fileExtensions.indexOf(fileType) === -1) return
           callback(new File(path, fileType, null, stats.lastModified))
         }
       })
