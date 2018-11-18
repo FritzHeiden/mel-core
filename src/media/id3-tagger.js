@@ -1,6 +1,7 @@
 const File = require('../data/files/file')
 const UTF8Transcoder = require('../utils/utf8-transcoder')
-const ID3Parser = require('id3-parser')
+const JsMediaTags = require('jsmediatags')
+const ArrayBufferFileReader = require('./array-buffer-file-reader')
 
 module.exports = class Id3Tagger {
   async readTags (file) {
@@ -8,27 +9,48 @@ module.exports = class Id3Tagger {
       throw new Error('First parameter must be of type File!')
     }
 
-    let {
-      title: trackTitle,
-      artist: artistName,
-      band: albumArtistName,
-      year,
-      track: trackNumber,
-      'set-part': discNumber,
-      album: albumTitle,
-      image: albumCover
-    } = ID3Parser.parse(new Uint8Array(file.getBuffer()))
+    JsMediaTags.Config.addFileReader(ArrayBufferFileReader)
 
-    return {
-      trackTitle,
-      artistName,
-      albumArtistName,
-      albumTitle,
-      year,
-      trackNumber,
-      discNumber,
-      albumCover
-    }
+    return new Promise((resolve, reject) => {
+      JsMediaTags.read(file.getBuffer(), {
+        onSuccess: ({ tags }) => {
+          let trackTitle = null
+          if (tags.TIT2) trackTitle = tags.TIT2.data
+          let artistName = null
+          if (tags.TPE1) artistName = tags.TPE1.data
+          let albumArtistName = null
+          if (tags.TPE2) albumArtistName = tags.TPE2.data
+          let year = null
+          if (tags.TDAT) year = tags.TDAT.data
+          if (!year && tags.TYER) year = tags.TYER.data
+          if (!year && tags.TDRC) year = tags.TDRC.data
+          let trackNumber = null
+          if (tags.TRCK) trackNumber = tags.TRCK.data
+          let discNumber = null
+          if (tags.TPOS) discNumber = tags.TPOS.data
+          let albumTitle = null
+          if (tags.TALB) albumTitle = tags.TALB.data
+          let albumCover = null
+          if (tags.APIC) albumCover = tags.APIC.data
+
+          resolve({
+            trackTitle,
+            artistName,
+            albumArtistName,
+            albumTitle,
+            year,
+            trackNumber,
+            discNumber,
+            albumCover
+          })
+        },
+        onError: error => {
+          console.log(error)
+        }
+      })
+    })
+
+    // const tags = ID3Parser.parse(new Uint8Array(file.getBuffer()))
 
     // let dataView = new DataView(file.getBuffer())
     // return this._readID3v2(dataView)

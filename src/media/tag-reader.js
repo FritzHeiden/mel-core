@@ -5,6 +5,15 @@ const Artist = require('../data/artist')
 const Album = require('../data/album')
 const Track = require('../data/track')
 
+const UNKNOWN_ARTIST_NAME = 'Unknown Artist'
+const UNKNOWN_ALBUM_TITLE = 'Unknown Album'
+const UNKNOWN_TRACK_TITLE = 'Unknown Track'
+
+/**
+ * Reads id3 tags of a file and returns track, album and artists objects.
+ * @type {module.TagReader}
+ */
+
 module.exports = class TagReader {
   constructor (configuration) {
     this._id3Tagger = new Id3Tagger()
@@ -21,6 +30,7 @@ module.exports = class TagReader {
     tags = this._evaluateTags(tags)
 
     let trackArtists = tags.trackArtistNames.map(trackArtistName => {
+      if (!trackArtistName) trackArtistName = UNKNOWN_ARTIST_NAME
       return new Artist(undefined, trackArtistName, [], [])
     })
 
@@ -29,6 +39,7 @@ module.exports = class TagReader {
     })
 
     let albumArtistName = tags.albumArtistName
+    if (!albumArtistName) albumArtistName = UNKNOWN_ARTIST_NAME
     let albumArtist = new Artist(undefined, albumArtistName, [], [])
     albumArtist.setId(GmidGenerator.generateArtistGmid(albumArtist.getName()))
 
@@ -39,6 +50,7 @@ module.exports = class TagReader {
     })
 
     let albumTitle = tags.albumTitle
+    if (!albumTitle) albumTitle = UNKNOWN_ALBUM_TITLE
     let year = tags.year
     let album = new Album(
       undefined,
@@ -57,8 +69,10 @@ module.exports = class TagReader {
     )
 
     let trackTitle = tags.trackTitle
+    if (!trackTitle) trackTitle = UNKNOWN_TRACK_TITLE
     let trackNumber = tags.trackNumber
     let discNumber = tags.discNumber
+
     let track = new Track(
       undefined,
       trackTitle,

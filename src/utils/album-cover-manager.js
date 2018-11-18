@@ -27,7 +27,8 @@ module.exports = class AlbumCoverManager {
       return
     }
 
-    const { data, mime } = album.getAlbumCover()
+    let { data, format: mime } = album.getAlbumCover()
+    data = new Uint8Array(data)
     const extension = this._mimeToExtension(mime)
 
     const filePath = this._albumCoversPath + '/' + album.getId() + extension
