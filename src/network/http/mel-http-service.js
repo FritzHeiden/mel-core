@@ -1,5 +1,7 @@
 const Deserializer = require('../../utils/deserializer')
 
+const GET = 'GET'
+
 module.exports = class MelHttpService {
   constructor (host, port, { webRoot, protocol }) {
     this._host = host
@@ -8,53 +10,18 @@ module.exports = class MelHttpService {
     if (webRoot) this._webRoot = webRoot
     this._protocol = 'http'
     if (protocol) this._protocol = protocol
+    this._connections = []
   }
-
-  // getTracks () {
-  //   return new Promise((resolve, reject) =>
-  //     this._sendRequest('GET', '/api/tracks')
-  //       .then(response =>
-  //         resolve(
-  //           this._deserializer.deserializeTracks(JSON.parse(response).tracks)
-  //         )
-  //       )
-  //       .catch(err => reject(err))
-  //   )
-  // }
-
-  // getArtist (artistId) {
-  //   return new Promise((resolve, reject) =>
-  //     this._sendRequest('GET', '/api/artists/' + artistId)
-  //       .then(response =>
-  //         resolve(
-  //           this._deserializer.deserializeArtist(JSON.parse(response).artist)
-  //         )
-  //       )
-  //       .catch(err => reject(err))
-  //   )
-  // }
 
   getArtists () {
     return new Promise((resolve, reject) =>
-      this._sendRequest('GET', 'api/artists')
+      this._sendRequest(GET, 'api/artists')
         .then(response =>
           resolve(Deserializer.deserializeArtists(JSON.parse(response.body)))
         )
         .catch(err => reject(err))
     )
   }
-
-  // getAlbum (albumId) {
-  //   return new Promise((resolve, reject) =>
-  //     this._sendRequest('GET', '/api/albums/' + albumId)
-  //       .then(response =>
-  //         resolve(
-  //           this._deserializer.deserializeAlbum(JSON.parse(response).album)
-  //         )
-  //       )
-  //       .catch(err => reject(err))
-  //   )
-  // }
 
   downloadTrack (trackId, progressHandler) {
     let options = {
@@ -64,10 +31,14 @@ module.exports = class MelHttpService {
       options.progressHandler = progressHandler
     }
     return new Promise((resolve, reject) => {
-      this._sendRequest('GET', `api/tracks/${trackId}/data`, options)
+      this._sendRequest(GET, `api/tracks/${trackId}/data`, options)
         .then(response => resolve(response.body))
         .catch(error => reject(error))
     })
+  }
+
+  abortTrackDownload (trackId) {
+    this._cancelConnection(GET, `api/tracks/${trackId}/data`)
   }
 
   async getTrackDataInfo (trackId) {
@@ -95,9 +66,22 @@ module.exports = class MelHttpService {
     return `${this._webRoot}api/albums/${albumId}/cover`
   }
 
+  _cancelConnection (method, uri) {
+    this._connections
+      .filter(connection => {
+        return connection.method === method && connection.uri === uri
+      })
+      .forEach(({ request }) => request.abort())
+  }
+
+  _addConnection (method, uri, request) {
+    this._connections.push({ method, uri, request })
+  }
+
   async _sendRequest (method, uri, { responseType, progressHandler } = {}) {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest()
+      this._addConnection(method, uri, request)
       request.addEventListener('load', event => {
         if (request.status === 200) {
           resolve({
@@ -119,7 +103,6 @@ module.exports = class MelHttpService {
         request.responseType = responseType
       }
 
-      console.log(`${this._protocol}://${this._host}:${this._port}${this._webRoot}${uri}`)
       request.open(
         method,
         `${this._protocol}://${this._host}:${this._port}${this._webRoot}${uri}`,

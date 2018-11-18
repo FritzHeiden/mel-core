@@ -9,7 +9,9 @@ module.exports = class DirectoryScanner {
     this._config = configuration
     this._readingQueue = new JobQueue(MAX_READING_JOBS)
     this._queueReading = this._readingQueue.queueJob.bind(this._readingQueue)
-    this._fileExtensions = this._config.extensions.map(extension => this._determineFileType(extension))
+    this._fileExtensions = this._config.extensions.map(extension =>
+      this._determineFileType(extension)
+    )
   }
 
   async scanDirs (callback) {
