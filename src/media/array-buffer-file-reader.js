@@ -1,4 +1,4 @@
-const MediaFileReader = require('jsmediatags/build2/MediaFileReader')
+const MediaFileReader = require('../../lib/MediaFileReader')
 
 class ArrayBufferFileReader extends MediaFileReader {
   constructor (file) {
@@ -17,9 +17,11 @@ class ArrayBufferFileReader extends MediaFileReader {
   loadRange (range, callbacks) {
     callbacks.onSuccess()
   }
+
   getBytesLoaded (param) {
     console.log('getBytesLoaded NOT IMPLEMENTED!')
   }
+
   getByteAt (offset) {
     return this._dataView.getUint8(offset)
   }

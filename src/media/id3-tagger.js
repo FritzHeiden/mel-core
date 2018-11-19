@@ -1,6 +1,6 @@
 const File = require('../data/files/file')
 const UTF8Transcoder = require('../utils/utf8-transcoder')
-const JsMediaTags = require('jsmediatags/dist/jsmediatags.min')
+const JsMediaTags = require('../../lib/jsmediatags')
 const ArrayBufferFileReader = require('./array-buffer-file-reader')
 
 module.exports = class Id3Tagger {

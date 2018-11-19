@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "gmid-generator": "fritzendgltig/gmid-generator.git",
-    "jsmediatags": "^3.8.1",
     "jszip": "^3.1.5"
   }
 }
