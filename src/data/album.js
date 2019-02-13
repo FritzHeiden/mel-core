@@ -1,5 +1,5 @@
 module.exports = class Album {
-  constructor (
+  constructor(
     id,
     artist,
     title,
@@ -8,50 +8,50 @@ module.exports = class Album {
     featureArtists = [],
     albumCover
   ) {
-    this._id = id
-    this._title = title
-    this._year = year
-    this._tracks = []
-    this.addTracks(tracks)
-    this._artist = artist
-    this._featureArtists = featureArtists
-    this._albumCover = albumCover
+    this._id = id;
+    this._title = title;
+    this._year = year;
+    this._tracks = [];
+    this.addTracks(tracks);
+    this._artist = artist;
+    this._featureArtists = featureArtists;
+    this._albumCover = albumCover;
   }
 
-  addTrack (newTrack) {
-    newTrack.setAlbum(this)
+  addTrack(newTrack) {
+    newTrack.setAlbum(this);
     if (
       this._tracks.findIndex(track => track.getId() === newTrack.getId()) === -1
     ) {
-      this._tracks.push(newTrack)
+      this._tracks.push(newTrack);
     }
   }
 
-  addTracks (tracks) {
-    tracks.forEach(track => this.addTrack(track))
+  addTracks(tracks) {
+    tracks.forEach(track => this.addTrack(track));
   }
 
-  addFeatureArtist (newArtist) {
+  addFeatureArtist(newArtist) {
     if (
       this._featureArtists.findIndex(
         artist => artist.getId() === newArtist.getId()
       ) === -1
     ) {
-      this._featureArtists.push(newArtist)
-      newArtist.addFeatureAlbum(this)
+      this._featureArtists.push(newArtist);
+      newArtist.addFeatureAlbum(this);
     }
   }
 
-  addFeatureArtists (artists) {
-    artists.forEach(artist => this.addFeatureArtist(artist))
+  addFeatureArtists(artists) {
+    artists.forEach(artist => this.addFeatureArtist(artist));
   }
 
-  deleteTrack (trackId) {
-    const index = this._tracks.findIndex(track => track.getId() === trackId)
-    this._tracks.splice(index, 1)
+  deleteTrack(trackId) {
+    const index = this._tracks.findIndex(track => track.getId() === trackId);
+    this._tracks.splice(index, 1);
   }
 
-  toString () {
+  toString() {
     return (
       `Album {` +
       `title: ${this._title}, ` +
@@ -62,72 +62,72 @@ module.exports = class Album {
         artist.getName()
       )}, ` +
       `id: ${this._id}}`
-    )
+    );
   }
 
-  deleteAlbumCoverBuffer () {
-    delete this._albumCover
+  deleteAlbumCoverBuffer() {
+    delete this._albumCover;
   }
 
-  getAlbumCover () {
-    return this._albumCover
+  getAlbumCover() {
+    return this._albumCover;
   }
 
-  setAlbumCover (cover) {
-    this._albumCover = cover
+  setAlbumCover(cover) {
+    this._albumCover = cover;
   }
 
-  setArtist (artist) {
-    this._artist = artist
-    return this
+  setArtist(artist) {
+    this._artist = artist;
+    return this;
   }
 
-  getArtist () {
-    return this._artist
+  getArtist() {
+    return this._artist;
   }
 
-  getTitle () {
-    return this._title
+  getTitle() {
+    return this._title;
   }
 
-  setTitle (value) {
-    this._title = value
-    return this
+  setTitle(value) {
+    this._title = value;
+    return this;
   }
 
-  getYear () {
-    return this._year
+  getYear() {
+    return this._year;
   }
 
-  setYear (value) {
-    this._year = value
-    return this
+  setYear(value) {
+    this._year = value;
+    return this;
   }
 
-  getTracks () {
-    return this._tracks
+  getTracks() {
+    return this._tracks;
   }
 
-  setTracks (value) {
-    this._tracks = value
-    return this
+  setTracks(value) {
+    this._tracks = value;
+    return this;
   }
 
-  getId () {
-    return this._id
+  getId() {
+    return this._id;
   }
 
-  setId (value) {
-    this._id = value
-    return this
+  setId(value) {
+    this._id = value;
+    return this;
   }
 
-  getFeatureArtists () {
-    return this._featureArtists
+  getFeatureArtists() {
+    return this._featureArtists;
   }
 
-  setFeatureArtists (value) {
-    this._featureArtists = value
-    return this
+  setFeatureArtists(value) {
+    this._featureArtists = value;
+    return this;
   }
-}
+};

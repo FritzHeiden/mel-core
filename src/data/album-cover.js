@@ -1,31 +1,31 @@
 module.exports = class AlbumCover {
-  constructor (buffer, mime, albumId) {
-    this._buffer = buffer
-    this._mime = mime
-    this._albumId = albumId
+  constructor(buffer, mime, albumId) {
+    this._buffer = buffer;
+    this._mime = mime;
+    this._albumId = albumId;
   }
 
-  getBuffer () {
-    return this._buffer
+  getBuffer() {
+    return this._buffer;
   }
 
-  setBuffer (buffer) {
-    this._buffer = buffer
+  setBuffer(buffer) {
+    this._buffer = buffer;
   }
 
-  getMime () {
-    return this._mime
+  getMime() {
+    return this._mime;
   }
 
-  setMime (mime) {
-    this._mime = mime
+  setMime(mime) {
+    this._mime = mime;
   }
 
-  getAlbumId () {
-    return this._albumId
+  getAlbumId() {
+    return this._albumId;
   }
 
-  setAlbumId (albumId) {
-    this._albumId = albumId
+  setAlbumId(albumId) {
+    this._albumId = albumId;
   }
-}
+};

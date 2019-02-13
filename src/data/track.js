@@ -1,31 +1,31 @@
 module.exports = class Track {
-  constructor (
+  constructor(
     id,
-    title = '',
+    title = "",
     artists = [],
     album = {},
     number = 0,
     discNumber = 0
   ) {
-    this._title = title
-    this._artists = artists
-    this._album = album
-    this._number = number
-    this._discNumber = discNumber
-    this._id = id
+    this._title = title;
+    this._artists = artists;
+    this._album = album;
+    this._number = number;
+    this._discNumber = discNumber;
+    this._id = id;
   }
 
-  addArtist (newArtist) {
+  addArtist(newArtist) {
     if (
       this._artists.findIndex(
         artist => artist.getId() === newArtist.getId()
       ) === -1
     ) {
-      this._artists.push(newArtist)
+      this._artists.push(newArtist);
     }
   }
 
-  toString () {
+  toString() {
     return (
       `Track {` +
       `title: ${this._title}, ` +
@@ -34,60 +34,60 @@ module.exports = class Track {
       `number: ${this._number}, ` +
       `discNumber: ${this._discNumber}, ` +
       `id: ${this._id}}`
-    )
+    );
   }
 
-  getTitle () {
-    return this._title
+  getTitle() {
+    return this._title;
   }
 
-  setTitle (value) {
-    this._title = value
-    return this
+  setTitle(value) {
+    this._title = value;
+    return this;
   }
 
-  getArtists () {
-    return this._artists
+  getArtists() {
+    return this._artists;
   }
 
-  setArtists (value) {
-    this._artists = value
-    return this
+  setArtists(value) {
+    this._artists = value;
+    return this;
   }
 
-  getAlbum () {
-    return this._album
+  getAlbum() {
+    return this._album;
   }
 
-  setAlbum (value) {
-    this._album = value
-    return this
+  setAlbum(value) {
+    this._album = value;
+    return this;
   }
 
-  getNumber () {
-    return this._number
+  getNumber() {
+    return this._number;
   }
 
-  setNumber (value) {
-    this._number = value
-    return this
+  setNumber(value) {
+    this._number = value;
+    return this;
   }
 
-  getDiscNumber () {
-    return this._discNumber
+  getDiscNumber() {
+    return this._discNumber;
   }
 
-  setDiscNumber (value) {
-    this._discNumber = value
-    return this
+  setDiscNumber(value) {
+    this._discNumber = value;
+    return this;
   }
 
-  getId () {
-    return this._id
+  getId() {
+    return this._id;
   }
 
-  setId (value) {
-    this._id = value
-    return this
+  setId(value) {
+    this._id = value;
+    return this;
   }
-}
+};
