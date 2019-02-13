@@ -148,7 +148,7 @@ class MelCore {
         }
       });
     });
-    console.log("Files refreshed.");
+    refreshQuery.onQueueEmpty(() => console.log("Files refreshed."));
   }
 
   set fileSystem(fileSystem) {

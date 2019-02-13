@@ -1,10 +1,15 @@
+const EventEmitter = require("./event-emitter");
+
+const QUEUE_EMPTY_EVENT = "queue_empty_event";
+
 module.exports = class JobQueue {
-  constructor(limit, waitingTime = 100) {
+  constructor(limit, waitingTime = 0) {
     this._jobs = [];
     this._processingJobs = false;
     this._limit = limit;
     this._waitingTime = waitingTime;
     this._runningJobs = 0;
+    this._eventEmitter = new EventEmitter();
   }
 
   async _processJobs() {
@@ -31,6 +36,7 @@ module.exports = class JobQueue {
       }
     }
     this._processingJobs = false;
+    this._eventEmitter.invokeAll(QUEUE_EMPTY_EVENT);
   }
 
   queueJob(fn) {
@@ -39,5 +45,9 @@ module.exports = class JobQueue {
     );
     this._processJobs();
     return promise;
+  }
+
+  onQueueEmpty(callback) {
+    this._eventEmitter.on(QUEUE_EMPTY_EVENT, callback);
   }
 };
