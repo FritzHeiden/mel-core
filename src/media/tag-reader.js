@@ -13,10 +13,9 @@ const UNKNOWN_TRACK_TITLE = "Unknown Track";
  * Reads id3 tags of a file and returns track, album and artists objects.
  * @type {module.TagReader}
  */
-
 module.exports = class TagReader {
-  constructor(configuration) {
-    this._id3Tagger = new Id3Tagger();
+  constructor(configuration, fileSystem) {
+    this._id3Tagger = new Id3Tagger(fileSystem);
     this._config = configuration;
   }
 

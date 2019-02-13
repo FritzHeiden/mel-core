@@ -62,9 +62,9 @@ serializer.serializeFile = file => {
 
   let path = file.getPath();
   let type = file.getType();
-  let lastModified = file.getLastModified();
+  let stats = file.getStats();
   let trackId = file.getTrack().getId();
-  return { path, type, lastModified, trackId };
+  return { path, type, stats, trackId };
 };
 
 module.exports = serializer;

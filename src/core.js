@@ -41,7 +41,10 @@ class MelCore {
     } catch (err) {
       console.error("Could not initialize directory scanner: " + err);
     }
-    this._tagReader = new TagReader(this._configuration.tag_reader);
+    this._tagReader = new TagReader(
+      this._configuration.tag_reader,
+      this._fileSystem
+    );
 
     // Album Cover Manager
     this._albumCoverManager = new AlbumCoverManager(this._fileSystem);
@@ -94,22 +97,26 @@ class MelCore {
     console.log("Refreshing files ...");
     let refreshQuery = new JobQueue(5);
     // Scan directories
-    await this._directoryScanner.scanDirs(newFile =>
-      refreshQuery.queueJob(async () => {
+    await this._directoryScanner.scanDirs(newFile => {
+      return refreshQuery.queueJob(async () => {
         try {
           let file = await this._database.readFile(newFile.getPath());
-          if (file && newFile.getLastModified() <= file.getLastModified()) {
+          if (
+            file &&
+            newFile.getStats().lastModified <= file.getStats().lastModified
+          ) {
             // If file exists in DB -> skip
             console.log(`Skipping existing file ${file.getPath()} ...`);
             return null;
           }
 
-          newFile.setBuffer(
-            await this._fileSystem.readFileBuffer(newFile.getPath())
-          );
-
+          // newFile.setBuffer(
+          //   await this._fileSystem.readFileBuffer(newFile.getPath())
+          // )
           // If file does not exist in DB read its ID3 tags
-          newFile.setTrack(await this._tagReader.readTags(newFile));
+          // console.log("READING TAGS FOR FILE", newFile);
+          const track = await this._tagReader.readTags(newFile);
+          newFile.setTrack(track);
 
           await this._albumCoverManager.saveAlbumCover(
             newFile.getTrack().getAlbum()
@@ -121,12 +128,12 @@ class MelCore {
 
           newFile.deleteBuffer();
           // Persist file in DB
-          await this._database.persistFile(newFile);
+          this._database.persistFile(newFile);
           console.log(`Added new file ${newFile.getPath()}`);
 
-          await this._database.persistTrack(newFile.getTrack());
-          await this._database.persistAlbum(newFile.getTrack().getAlbum());
-          await this._database.persistArtist(
+          this._database.persistTrack(newFile.getTrack());
+          this._database.persistAlbum(newFile.getTrack().getAlbum());
+          this._database.persistArtist(
             newFile
               .getTrack()
               .getAlbum()
@@ -134,13 +141,13 @@ class MelCore {
           );
 
           for (let artist of newFile.getTrack().getArtists()) {
-            await this._database.persistArtist(artist);
+            this._database.persistArtist(artist);
           }
         } catch (err) {
           console.error(new Error(`Could not handle file:\n${err.stack}`));
         }
-      })
-    );
+      });
+    });
     console.log("Files refreshed.");
   }
 

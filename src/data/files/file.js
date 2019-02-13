@@ -2,11 +2,11 @@ const MP3 = "mp3";
 const FLAC = "flac";
 
 class File {
-  constructor(path, type, buffer = null, lastModified = 0, track) {
+  constructor(path, type, buffer = null, stats = {}, track) {
     this._path = path;
     this._type = type;
     this._buffer = buffer;
-    this._lastModified = lastModified;
+    this._stats = stats;
     this._track = track;
   }
 
@@ -41,12 +41,12 @@ class File {
     return this;
   }
 
-  getLastModified() {
-    return this._lastModified;
+  getStats() {
+    return this._stats;
   }
 
-  setLastModified(value) {
-    this._lastModified = value;
+  setStats(value) {
+    this._stats = value;
     return this;
   }
 

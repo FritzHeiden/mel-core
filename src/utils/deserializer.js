@@ -81,9 +81,9 @@ deserializer.deserializeFile = fileJson => {
 
   let path = fileJson.path;
   let type = fileJson.type;
-  let lastModified = fileJson.lastModified;
+  let stats = fileJson.stats;
   let track = new Track(fileJson.trackId);
-  return new File(path, type, null, lastModified, track);
+  return new File(path, type, null, stats, track);
 };
 
 deserializer.deserializeFiles = filesJson => {

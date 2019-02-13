@@ -7,6 +7,10 @@ module.exports = class FileSystem {
     throw new Error("FileSystem.stats(filePath) not implemented!");
   }
 
+  async read(filePath, range) {
+    throw new Error("FileSystem.read(filePath, range) not implemented!");
+  }
+
   async readFile(filePath) {
     throw new Error("FileSystem.readFile(filePath) not implemented!");
   }

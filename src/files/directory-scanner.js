@@ -1,7 +1,7 @@
 const File = require("../data/files/file");
 const JobQueue = require("../utils/job-qeue");
 
-const MAX_READING_JOBS = 1;
+const MAX_READING_JOBS = 5;
 
 module.exports = class DirectoryScanner {
   constructor(fileSystem, configuration) {
@@ -23,30 +23,58 @@ module.exports = class DirectoryScanner {
   }
 
   async scanDir(directory, callback) {
-    let files = [];
-    try {
-      files = await this._queueReading(() =>
-        this._fileSystem.readDir(directory)
+    const directories = [directory];
+    do {
+      await Promise.all(
+        directories.map(directory =>
+          this._queueReading(async () => {
+            const fileNames = await this._fileSystem.readDir(directory);
+            const filePaths = fileNames.map(
+              fileName => `${directory}/${fileName}`
+            );
+            await Promise.all(
+              filePaths.map(async filePath => {
+                const stats = await this._fileSystem.stats(filePath);
+                if (!stats) return;
+                if (stats.isDirectory) {
+                  directories.push(filePath);
+                  return;
+                }
+                const fileType = this._determineFileType(filePath);
+                if (this._fileExtensions.indexOf(fileType) === -1) return;
+                callback(new File(filePath, fileType, null, stats));
+              })
+            );
+            directories.splice(directories.indexOf(directory), 1);
+          })
+        )
       );
-    } catch (err) {
-      throw Error(`Could not read directory: ${err}`);
-    }
+    } while (directories.length > 0);
 
-    return Promise.all(
-      files.map(async file => {
-        let path = `${directory}/${file}`;
-        let stats = await this._queueReading(() =>
-          this._fileSystem.stats(path)
-        );
-        if (stats.isDirectory) {
-          return this.scanDir(path, callback);
-        } else {
-          let fileType = this._determineFileType(path);
-          if (this._fileExtensions.indexOf(fileType) === -1) return;
-          callback(new File(path, fileType, null, stats.lastModified));
-        }
-      })
-    );
+    // let files = [];
+    // try {
+    //   files = await this._queueReading(() =>
+    //     this._fileSystem.readDir(directory)
+    //   );
+    // } catch (err) {
+    //   throw Error(`Could not read directory: ${err}`);
+    // }
+
+    // return Promise.all(
+    //   files.map(async file => {
+    //     let path = `${directory}/${file}`;
+    //     let stats = await this._queueReading(() =>
+    //       this._fileSystem.stats(path)
+    //     );
+    //     if (stats.isDirectory) {
+    //       return this.scanDir(path, callback);
+    //     } else {
+    //       let fileType = this._determineFileType(path);
+    //       if (this._fileExtensions.indexOf(fileType) === -1) return;
+    //       callback(new File(path, fileType, null, stats));
+    //     }
+    //   })
+    // );
   }
 
   _determineFileType(path) {
@@ -60,6 +88,8 @@ module.exports = class DirectoryScanner {
         return File.MP3;
       case "flac":
         return File.FLAC;
+      default:
+        return null;
     }
   }
 };

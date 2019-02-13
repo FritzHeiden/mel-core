@@ -51,7 +51,6 @@ module.exports = class Database {
   }
 
   // Track //
-
   async createTrack(track) {
     let trackJson = Serializer.serializeTrack(track);
     return this._queueWriting(() => this._createTrack(trackJson));
@@ -96,7 +95,6 @@ module.exports = class Database {
   }
 
   // Album
-
   async createAlbum(album) {
     let albumJson = Serializer.serializeAlbum(album);
     return this._queueWriting(() => this._createAlbum(albumJson));
@@ -144,7 +142,6 @@ module.exports = class Database {
   }
 
   // Artist
-
   async createArtist(artist) {
     let artistJson = Serializer.serializeArtist(artist);
     return this._queueWriting(() => this._createArtist(artistJson));
@@ -201,13 +198,11 @@ module.exports = class Database {
   }
 
   // General
-
   async _loadDatabase() {
     throw new Error("Database._loadDatabase() is not implemented!");
   }
 
   // File
-
   async createFile(file) {
     let fileJson = Serializer.serializeFile(file);
     return this._queueWriting(() => this._createFile(fileJson));
@@ -251,6 +246,8 @@ module.exports = class Database {
   }
 
   async _persistFile(file) {
+    const { lastModified, size } = file.getStats();
+    file.setStats({ lastModified, size });
     if (!(await this.readFile(file.id))) {
       return this.createFile(file);
     } else {
@@ -259,7 +256,6 @@ module.exports = class Database {
   }
 
   // Meta Data
-
   async _readDatabaseMetaData(key) {
     throw new Error("Database._readDatabaseMetadata(key) not implemented!");
   }
