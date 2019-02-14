@@ -35,6 +35,18 @@ module.exports = class Artist {
     albums.forEach(album => this.addFeatureAlbum(album));
   }
 
+  complement(artist) {
+    const complementedArtist = new Artist(
+      this._id || artist.getId(),
+      this._name || artist.getName(),
+      this._albums,
+      this._featureAlbums
+    );
+    complementedArtist.addAlbums(artist.getAlbums());
+    complementedArtist.addFeatureAlbums(artist.getFeatureAlbums());
+    return complementedArtist;
+  }
+
   toString() {
     return (
       `Artist {` +

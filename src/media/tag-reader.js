@@ -21,12 +21,12 @@ module.exports = class TagReader {
 
   async readTags(file) {
     let tags = await this._id3Tagger.readTags(file);
-    let track = this._generateMetaData(file, tags);
+    let track = this._generateMetaData(tags);
     return track;
   }
 
-  _generateMetaData(file, tags) {
-    tags = this._evaluateTags(tags);
+  _generateMetaData(tags) {
+    tags = this._parseTags(tags);
 
     let trackArtists = tags.trackArtistNames.map(trackArtistName => {
       if (!trackArtistName) trackArtistName = UNKNOWN_ARTIST_NAME;
@@ -107,7 +107,7 @@ module.exports = class TagReader {
     return track;
   }
 
-  _evaluateTags(tags) {
+  _parseTags(tags) {
     let year = tags.year ? parseInt(tags.year.split("-")[0]) : undefined;
     let trackNumber = tags.trackNumber
       ? parseInt(tags.trackNumber.split("/")[0])

@@ -1,9 +1,12 @@
 const Serializer = require("../../utils/serializer");
+const Constants = require("../../constants");
 
 const GET_ARTISTS = "get_artists";
 const GET_ARTIST = "get_artist";
 const GET_ALBUM = "get_album";
 const GET_TRACK = "get_track";
+
+const { API_PRIORITY } = Constants.database;
 
 module.exports = class MelServerSocket {
   constructor(webSocket, identity, database, { webRoot } = {}) {
@@ -30,7 +33,7 @@ module.exports = class MelServerSocket {
 
   _getArtists(socket) {
     this._database
-      .readArtists()
+      .readArtists(API_PRIORITY)
       .then(artists => {
         socket.emit(GET_ARTISTS, Serializer.serializeArtists(artists));
       })
@@ -39,7 +42,7 @@ module.exports = class MelServerSocket {
 
   _getArtist(socket, data) {
     this._database
-      .readArtist(data.artistId)
+      .readArtist(data.artistId, API_PRIORITY)
       .then(artist =>
         socket.emit(GET_ARTIST, Serializer.serializeArtist(artist))
       )
@@ -48,14 +51,14 @@ module.exports = class MelServerSocket {
 
   _getAlbum(socket, data) {
     this._database
-      .readAlbum(data.albumId)
+      .readAlbum(data.albumId, API_PRIORITY)
       .then(album => socket.emit(GET_ALBUM, Serializer.serializeAlbum(album)))
       .catch(err => console.error(err.stack));
   }
 
   _getTrack(socket, data) {
     this._database
-      .readTrack(data.trackId)
+      .readTrack(data.trackId, API_PRIORITY)
       .then(track => socket.emit(GET_TRACK, Serializer.serializeTrack(track)))
       .catch(err => console.error(err.stack));
   }

@@ -25,6 +25,24 @@ module.exports = class Track {
     }
   }
 
+  addArtists(newArtists) {
+    newArtists.forEach(artist => this.addArtist(artist));
+    return this;
+  }
+
+  complement(track) {
+    const complementedTrack = new Track(
+      this._id || track.getId(),
+      this._title || track.getTitle(),
+      this._artists,
+      this._album || track.getAlbum(),
+      this._number || track.getNumber(),
+      this._discNumber || track.getDiscNumber()
+    );
+    complementedTrack.addArtists(track.getArtists());
+    return complementedTrack;
+  }
+
   toString() {
     return (
       `Track {` +

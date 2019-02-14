@@ -51,6 +51,21 @@ module.exports = class Album {
     this._tracks.splice(index, 1);
   }
 
+  complement(album) {
+    const complementedAlbum = new Album(
+      this._id || album.getId(),
+      this._artist || album.getArtist(),
+      this._title || album.getTitle(),
+      this._year || album.getYear(),
+      this._tracks,
+      this._featureArtists,
+      this._albumCover || album.getAlbumCover()
+    );
+    complementedAlbum.addFeatureArtists(album.getFeatureArtists());
+    complementedAlbum.addTracks(album.getTracks());
+    return complementedAlbum;
+  }
+
   toString() {
     return (
       `Album {` +

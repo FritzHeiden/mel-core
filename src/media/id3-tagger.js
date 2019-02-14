@@ -15,7 +15,6 @@ module.exports = class Id3Tagger {
     if (!(file instanceof File)) {
       throw new Error("First parameter must be of type File!");
     }
-    console.log("READING TAGS", file.getPath());
 
     return new Promise((resolve, reject) => {
       JsMediaTags.read(file, {

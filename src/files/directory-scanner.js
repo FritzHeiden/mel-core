@@ -14,11 +14,9 @@ module.exports = class DirectoryScanner {
     );
   }
 
-  async scanDirs(callback) {
+  async scanDirs(directories, callback) {
     return Promise.all(
-      this._config.directories.map(directory =>
-        this.scanDir(directory, callback)
-      )
+      directories.map(directory => this.scanDir(directory, callback))
     );
   }
 
@@ -50,31 +48,6 @@ module.exports = class DirectoryScanner {
         )
       );
     } while (directories.length > 0);
-
-    // let files = [];
-    // try {
-    //   files = await this._queueReading(() =>
-    //     this._fileSystem.readDir(directory)
-    //   );
-    // } catch (err) {
-    //   throw Error(`Could not read directory: ${err}`);
-    // }
-
-    // return Promise.all(
-    //   files.map(async file => {
-    //     let path = `${directory}/${file}`;
-    //     let stats = await this._queueReading(() =>
-    //       this._fileSystem.stats(path)
-    //     );
-    //     if (stats.isDirectory) {
-    //       return this.scanDir(path, callback);
-    //     } else {
-    //       let fileType = this._determineFileType(path);
-    //       if (this._fileExtensions.indexOf(fileType) === -1) return;
-    //       callback(new File(path, fileType, null, stats));
-    //     }
-    //   })
-    // );
   }
 
   _determineFileType(path) {

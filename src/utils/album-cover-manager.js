@@ -51,6 +51,7 @@ module.exports = class AlbumCoverManager {
   }
 
   async loadAlbumCover(albumId) {
+    if (!albumId) return null;
     const extension = this._albumCovers[albumId];
     if (!extension) {
       throw new Error(`Could not find ${albumId} in album cover index!`);

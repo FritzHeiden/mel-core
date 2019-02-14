@@ -19,6 +19,7 @@ const Request = require("./network/http/request");
 const AlbumCoverManager = require("./utils/album-cover-manager");
 const TrackDownloadService = require("./services/track-download-service");
 const StringFormatter = require("./utils/string-formatter");
+const MediaScraper = require("./media/media-scraper");
 
 class MelCore {
   async initialize({ configPath, melWebPath }) {
@@ -49,6 +50,14 @@ class MelCore {
     // Album Cover Manager
     this._albumCoverManager = new AlbumCoverManager(this._fileSystem);
     await this._albumCoverManager.initialize();
+
+    // Media Scraper
+    this._mediaScraper = new MediaScraper({
+      directoryScanner: this._directoryScanner,
+      database: this._database,
+      tagReader: this._tagReader,
+      albumCoverManager: this._albumCoverManager
+    });
 
     // Database
     try {
@@ -94,61 +103,11 @@ class MelCore {
   }
 
   async refreshFiles() {
-    console.log("Refreshing files ...");
-    let refreshQuery = new JobQueue(5);
-    // Scan directories
-    await this._directoryScanner.scanDirs(newFile => {
-      return refreshQuery.queueJob(async () => {
-        try {
-          let file = await this._database.readFile(newFile.getPath());
-          if (
-            file &&
-            newFile.getStats().lastModified <= file.getStats().lastModified
-          ) {
-            // If file exists in DB -> skip
-            console.log(`Skipping existing file ${file.getPath()} ...`);
-            return null;
-          }
-
-          // newFile.setBuffer(
-          //   await this._fileSystem.readFileBuffer(newFile.getPath())
-          // )
-          // If file does not exist in DB read its ID3 tags
-          // console.log("READING TAGS FOR FILE", newFile);
-          const track = await this._tagReader.readTags(newFile);
-          newFile.setTrack(track);
-
-          await this._albumCoverManager.saveAlbumCover(
-            newFile.getTrack().getAlbum()
-          );
-          newFile
-            .getTrack()
-            .getAlbum()
-            .deleteAlbumCoverBuffer();
-
-          newFile.deleteBuffer();
-          // Persist file in DB
-          this._database.persistFile(newFile);
-          console.log(`Added new file ${newFile.getPath()}`);
-
-          this._database.persistTrack(newFile.getTrack());
-          this._database.persistAlbum(newFile.getTrack().getAlbum());
-          this._database.persistArtist(
-            newFile
-              .getTrack()
-              .getAlbum()
-              .getArtist()
-          );
-
-          for (let artist of newFile.getTrack().getArtists()) {
-            this._database.persistArtist(artist);
-          }
-        } catch (err) {
-          console.error(new Error(`Could not handle file:\n${err.stack}`));
-        }
-      });
-    });
-    refreshQuery.onQueueEmpty(() => console.log("Files refreshed."));
+    return Promise.all(
+      this._configuration.scanner.directories.map(directory =>
+        this._mediaScraper.scrapeMusic(directory)
+      )
+    );
   }
 
   set fileSystem(fileSystem) {
