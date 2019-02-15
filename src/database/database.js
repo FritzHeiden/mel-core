@@ -7,11 +7,11 @@ const IDENTITY = "id";
 const READ_JOB_GROUP = "read";
 const { MAX_ACCESS_JOBS, MAX_GROUP_JOBS } = Constants.database;
 
-const TRACKS_DB_FILENAME = "tracks.db";
-const ALBUMS_DB_FILENAME = "albums.db";
-const ARTISTS_DB_FILENAME = "artists.db";
-const FILES_DB_FILENAME = "files.db";
-const DB_META_FILENAME = "meta.db";
+const TRACKS_DB_NAME = "tracks";
+const ALBUMS_DB_NAME = "albums";
+const ARTISTS_DB_NAME = "artists";
+const FILES_DB_NAME = "files";
+const DB_META_NAME = "meta";
 
 module.exports = class Database {
   constructor() {
@@ -46,11 +46,11 @@ module.exports = class Database {
   }
 
   async initialize() {
-    this._tracks = await this._loadDatabase(TRACKS_DB_FILENAME);
-    this._albums = await this._loadDatabase(ALBUMS_DB_FILENAME);
-    this._artists = await this._loadDatabase(ARTISTS_DB_FILENAME);
-    this._files = await this._loadDatabase(FILES_DB_FILENAME);
-    this._meta = await this._loadDatabase(DB_META_FILENAME);
+    this._tracks = await this._loadDatabase(TRACKS_DB_NAME);
+    this._albums = await this._loadDatabase(ALBUMS_DB_NAME);
+    this._artists = await this._loadDatabase(ARTISTS_DB_NAME);
+    this._files = await this._loadDatabase(FILES_DB_NAME);
+    this._meta = await this._loadDatabase(DB_META_NAME);
 
     // this._identity = await this._readDatabaseMetaData(IDENTITY);
     // if (!this._identity) {
