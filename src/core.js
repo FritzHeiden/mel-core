@@ -1,6 +1,5 @@
 const DirectoryScanner = require("./files/directory-scanner");
 const WebServer = require("./network/http/web-server");
-const ConfigurationLoader = require("./config/configuration-loader");
 const TagReader = require("./media/tag-reader");
 const Database = require("./database/database");
 const ApiHandler = require("./network/http/api-handler");
@@ -110,32 +109,32 @@ class MelCore {
     );
   }
 
-  set fileSystem(fileSystem) {
+  setFileSystem(fileSystem) {
     if (!(fileSystem instanceof FileSystem)) {
       throw new Error("File system must be of class FileSystem.");
     }
     this._fileSystem = fileSystem;
   }
 
-  set webServer(webServer) {
+  setWebServer(webServer) {
     if (!(webServer instanceof WebServer)) {
       throw new Error("Web server must be of class WebServer.");
     }
     this._webServer = webServer;
   }
 
-  get webServer() {
+  getWebServer() {
     return this._webServer;
   }
 
-  set database(database) {
+  setDatabase(database) {
     if (!(database instanceof Database)) {
       throw new Error("Database must be of class Database.");
     }
     this._database = database;
   }
 
-  set webSocket(socket) {
+  setWebSocket(socket) {
     this._webSocket = socket;
   }
 }
